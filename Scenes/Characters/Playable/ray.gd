@@ -4,6 +4,7 @@ extends CharacterBody2D
 # --- Constants & Enums ---
 const UNIT_SCALE: float = 100.0
 const EXPLOSION: PackedScene = preload("res://Scenes/Effects/explosion.tscn")
+const PUNCH_EFFECT: PackedScene = preload("res://Scenes/Effects/punch_effect.tscn")
 
 enum State { NORMAL, CUTSCENE, DEAD }
 enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
@@ -64,7 +65,6 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @export var max_roll: float = 0.05
 
 # --- Onready Nodes ---
-@onready var fire_fill: Timer = $FireFill
 @onready var dash_timeout: Timer = $DashTimeout
 @onready var smoke: GPUParticles2D = $Smoke/Smoke
 @onready var smoke_2: GPUParticles2D = $Smoke/Smoke2
@@ -353,7 +353,7 @@ func dash() -> void:
 		current_movement_state = MovementState.NORMAL
 		velocity.y = -dash_velocity * UNIT_SCALE
 		can_dash = false
-		rpc("spawn_explosion")
+		spawn_explosion.rpc(false)
 		play_animation_once("Jump")
 		set_smoke_emitting(true)
 		
@@ -431,7 +431,7 @@ func apply_physics_impulse(impulse_velocity: Vector2, from_air_dash: bool = fals
 	is_air_dash_ragdoll = from_air_dash
 	velocity = impulse_velocity * UNIT_SCALE
 	if from_air_dash:
-		rpc("spawn_explosion")
+		spawn_explosion.rpc(false)
 
 func grab_ledge() -> void:
 	if not is_multiplayer_authority(): return
@@ -488,9 +488,13 @@ func damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multiplier: f
 	
 	set_physics_process(false)
 	override_animations = true
+	sprite.stop()
+	_spawn_hit_effect.rpc(origin)
 	sprite.play("Hurt")
+	set_process_input(false)
 	await get_tree().create_timer(0.4).timeout
 	set_physics_process(true)
+	set_process_input(true)
 
 	if Health <= 0.0:
 		_sync_die.rpc(origin)
@@ -499,6 +503,17 @@ func damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multiplier: f
 		velocity = Vector2(7.6 * ((dir_x * UNIT_SCALE) * velocity_multiplier), (-3.0 * UNIT_SCALE) * velocity_multiplier)
 		await get_tree().create_timer(0.4).timeout
 		override_animations = false
+
+@rpc("authority", "call_local", "reliable")
+func _spawn_hit_effect(origin: Vector2) -> void:
+	var effect : Node = PUNCH_EFFECT.instantiate()
+	effect.global_position = global_position
+	effect.global_position.x += randi_range(-5,5)
+	effect.global_position.y += randi_range(-5,5)
+	effect.scale *= randi_range(1, 2.4)
+	effect.look_at(origin)
+	
+	get_tree().root.add_child(effect)
 
 func grant_invincibility(time: float = 1.0) -> void:
 	is_invincible = true
@@ -568,11 +583,17 @@ func _process_death_movement(delta: float) -> void:
 
 # --- Helper Methods ---
 @rpc("any_peer", "call_local", "reliable")
-func spawn_explosion() -> void:
+func spawn_explosion(is_finisher: bool) -> void:
 	var explosion := EXPLOSION.instantiate() as Node2D
 	explosion.global_position = global_position
 	get_tree().root.add_child(explosion)
 	apply_shake(1.75)
+	explosion.get_child(2).area_entered.connect(func(area: Area2D) -> void:
+		var parent = area.get_parent()
+		if parent.is_in_group("Entity") and not parent.is_in_group("Player"):
+			if is_finisher:
+				heal(5)
+		)
 
 func set_smoke_emitting(emitting: bool) -> void:
 	if is_instance_valid(smoke) and is_instance_valid(smoke_2):
@@ -608,11 +629,6 @@ func _on_ledge_detecor_area_area_entered(area: Area2D) -> void:
 		if (not sprite.flip_h and diff > 0) or (sprite.flip_h and diff < 0):
 			grab_ledge()
 
-func _on_fire_fill_timeout() -> void:
-	if not is_multiplayer_authority(): return
-	if fire < 100:
-		fire += 0.5
-
 # --- Punch Implementation ---
 func punch() -> void:
 	if not can_punch or current_state != State.NORMAL or is_in_ledge:
@@ -628,9 +644,10 @@ func punch() -> void:
 		if fire > 10:
 			fire -= 10
 			_execute_finisher()
+			override_animations = true
 			play_animation_once("Punch4")
 		else:
-			combo_count = 2
+			combo_count = 0
 	else:
 		punch_hitbox_activate(0.15)
 		var current_step: int = 1 if combo_count == 4 else combo_count
@@ -670,8 +687,10 @@ func _execute_finisher() -> void:
 	if not is_inside_tree(): 
 		return
 		
+	override_animations = false
+		
 	sprite.flip_h = not sprite.flip_h
-	rpc("spawn_explosion")
+	spawn_explosion.rpc(true)
 	dash()
 
 func _on_punch_cooldown_timeout() -> void:
@@ -691,10 +710,10 @@ func _on_punch_hitbox_area_entered(area: Area2D) -> void:
 		if parent_node.has_method("damage"):
 			parent_node.damage(20, global_position, 1, self)
 			apply_shake(1.0)
-			print("Hit!")
 			var direction = -1.0 if sprite.flip_h else 1.0
 			velocity.y = -1 * UNIT_SCALE
 			velocity.x = (1 * UNIT_SCALE) * direction
+			fire = clamp(fire + 5, 0.0, max_fire)
 			
 func change_camera_boundaries(left: int, right: int, top: int, bottom: int) -> void:
 	if not is_instance_valid(camera) or not is_multiplayer_authority():

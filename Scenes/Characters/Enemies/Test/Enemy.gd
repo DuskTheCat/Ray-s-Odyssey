@@ -33,7 +33,7 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @export_group("Combat & Physics")
 @export var max_health: float = 100.0
 @export var min_health: float = 100.0
-@export var attack_damage: float = 15.0
+@export var attack_damage: float = 10.0
 @export var attack_cooldown_time: float = 1.0
 @export var bounciness: float = 0.35
 @export var physics_friction: float = 10.0
@@ -799,9 +799,9 @@ func die(origin: Vector2 = Vector2.ZERO) -> void:
 	override_animations = true
 	_cancel_alert()
 	
-	set_collision_mask_value(2, false)
-	hurt_box.set_collision_mask_value(1, false)
 	set_collision_mask_value(3, false)
+	hurt_box.set_collision_mask_value(1, false)
+	set_collision_layer_value(2, false)
 	
 	var dir_x: float = 0.0
 	if origin != Vector2.ZERO:
@@ -869,9 +869,7 @@ func spawn_explosion() -> void:
 
 func _on_visible_on_screen_notifier_2d_screen_entered() -> void:
 	self_modulate = oldmodulate
-	print("show")
 
 
 func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 	self_modulate = Color.TRANSPARENT
-	print("hide")

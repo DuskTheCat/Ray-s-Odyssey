@@ -592,6 +592,7 @@ pivot_offset = Vector2(-1.0592194, 80.65625)
 texture = ExtResource("3_72pi2")
 
 [node name="TextureProgressBar2" type="TextureProgressBar" parent="UI/SafeScreen/FireBar" unique_id=478137232]
+z_index = 2
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -693,10 +694,6 @@ position = Vector2(0, 0)
 wait_time = 0.7
 one_shot = true
 
-[node name="FireFill" type="Timer" parent="." unique_id=395789355]
-wait_time = 0.1
-autostart = true
-
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=539430160]
 replication_config = SubResource("SceneReplicationConfig_3803x")
 
@@ -729,7 +726,7 @@ position = Vector2(0, 39)
 position = Vector2(0.99999034, -45.000008)
 scale = Vector2(0.36248603, 0.36248603)
 sprite_frames = SubResource("SpriteFrames_qbbde")
-animation = &"Jump"
+animation = &"Punch4"
 offset = Vector2(-1.2912111, -2.758667)
 
 [node name="InvincibilityTimer" type="Timer" parent="." unique_id=1230506164]
@@ -746,7 +743,6 @@ one_shot = true
 
 [connection signal="tree_exited" from="." to="." method="_on_tree_exited"]
 [connection signal="area_entered" from="LedgeDetecorArea" to="." method="_on_ledge_detecor_area_area_entered"]
-[connection signal="timeout" from="FireFill" to="." method="_on_fire_fill_timeout"]
 [connection signal="timeout" from="PunchTimeout" to="." method="_on_punch_timeout_timeout"]
 [connection signal="timeout" from="PunchCooldown" to="." method="_on_punch_cooldown_timeout"]
 [connection signal="area_entered" from="PunchHitbox" to="." method="_on_punch_hitbox_area_entered"]

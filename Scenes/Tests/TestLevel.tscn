@@ -164,16 +164,16 @@ size = Vector2(9058, 200)
 size = Vector2(1418, 1234)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1mwvq"]
-size = Vector2(1380, 1020)
+size = Vector2(1357, 1020)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kan2c"]
-size = Vector2(4036, 1669)
+size = Vector2(3989, 1669)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4wt4f"]
-size = Vector2(1364, 1343)
+size = Vector2(1350, 1343)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgkqs"]
-size = Vector2(1102, 787)
+size = Vector2(1086, 787)
 
 [node name="Node" type="Node2D" unique_id=476923287]
 z_as_relative = false
@@ -200,7 +200,7 @@ metadata/_edit_group_ = true
 shape = SubResource("RectangleShape2D_ykv2e")
 
 [node name="Ledge3" type="Area2D" parent="Ledges" unique_id=1815192778 groups=["Ledge"]]
-position = Vector2(683, -20)
+position = Vector2(683, -149)
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ledges/Ledge3" unique_id=702713077]
@@ -355,28 +355,28 @@ shape = SubResource("RectangleShape2D_ori7k")
 position = Vector2(-1019, -153)
 
 [node name="CollisionShape2D" parent="CameraZones/CameraZone" index="0" unique_id=267871196]
-position = Vector2(-79, -15)
+position = Vector2(-90.5, -15)
 shape = SubResource("RectangleShape2D_1mwvq")
 
 [node name="CameraZone2" parent="CameraZones" unique_id=1009109211 groups=["CameraBoundary"] instance=ExtResource("8_sgkqs")]
 position = Vector2(470, -153)
 
 [node name="CollisionShape2D" parent="CameraZones/CameraZone2" index="0" unique_id=267871196]
-position = Vector2(1115, -223)
+position = Vector2(1138.5, -223)
 shape = SubResource("RectangleShape2D_kan2c")
 
 [node name="CameraZone3" parent="CameraZones" unique_id=575977947 groups=["CameraBoundary"] instance=ExtResource("8_sgkqs")]
 position = Vector2(-889, -1156)
 
 [node name="CollisionShape2D" parent="CameraZones/CameraZone3" index="0" unique_id=267871196]
-position = Vector2(-213, -131.5)
+position = Vector2(-220, -131.5)
 shape = SubResource("RectangleShape2D_4wt4f")
 
 [node name="CameraZone4" parent="CameraZones" unique_id=698156078 groups=["CameraBoundary"] instance=ExtResource("8_sgkqs")]
 position = Vector2(403, -1439)
 
 [node name="CollisionShape2D" parent="CameraZones/CameraZone4" index="0" unique_id=267871196]
-position = Vector2(-250, -123.5)
+position = Vector2(-242, -123.5)
 shape = SubResource("RectangleShape2D_sgkqs")
 
 [connection signal="body_entered" from="KillArea" to="KillArea" method="_on_body_entered"]
