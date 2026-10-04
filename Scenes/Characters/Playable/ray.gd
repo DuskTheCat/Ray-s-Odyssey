@@ -450,7 +450,8 @@ func exit_ledge() -> void:
 
 # --- Camera Shake System ---
 func apply_shake(amount: float) -> void:
-	shake_trauma = clamp(shake_trauma + amount, 0.0, 10.0)
+	if amount > shake_trauma:
+		shake_trauma = clamp(shake_trauma + amount, 0.0, 10.0)
 
 func _process_camera_shake(delta: float) -> void:
 	if not is_instance_valid(camera) or shake_trauma <= 0.0:
@@ -479,7 +480,7 @@ func request_damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multi
 func damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multiplier: float = 1.0) -> void:
 	if current_state == State.DEAD or is_invincible and !invincibility_timer.is_stopped():
 		return
-	grant_invincibility(3.4)
+	grant_invincibility(2.4)
 
 	Health = max(Health - value, 0.0)
 	_play_hit_flash.rpc()
