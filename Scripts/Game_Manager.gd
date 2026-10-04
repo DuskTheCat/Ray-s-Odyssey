@@ -1,6 +1,7 @@
 extends Node2D # Or Node3D depending on your game
 
 @export var player_scene: PackedScene
+@export var pause_menu_scene: PackedScene
 
 func _ready() -> void:
 	# Check if we are running in multiplayer mode
@@ -14,6 +15,9 @@ func _ready() -> void:
 	elif not multiplayer.has_multiplayer_peer():
 		# Single-player fallback: Just spawn one local player
 		spawn_player(1) 
+		
+	if pause_menu_scene:
+		add_child(pause_menu_scene.instantiate())
 
 func spawn_player(id: int) -> void:
 	var player = player_scene.instantiate()
