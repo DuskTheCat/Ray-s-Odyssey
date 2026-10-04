@@ -6,6 +6,7 @@
 size = Vector2(40, 40)
 
 [node name="Hidden" type="ColorRect" unique_id=831959682]
+z_index = 3
 offset_left = -20.0
 offset_top = -20.0
 offset_right = 20.0

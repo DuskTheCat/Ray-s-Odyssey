@@ -405,6 +405,9 @@ func punch() -> void:
 	if not can_punch or is_punching or current_state == State.STUNNED or current_state == State.DEAD:
 		return
 		
+	if !stun_time.is_stopped():
+		return
+		
 	can_punch = false
 	is_punching = true
 	current_state = State.ATTACK
@@ -429,7 +432,7 @@ func punch() -> void:
 	# Proceed with the punch if uninterrupted
 	speed_multiplier = old_speed
 	play_animation_once("Punch1")
-	punch_hitbox_activate(0.2)
+	punch_hitbox_activate(0.15)
 	
 	var forward_direction: float = -1.0 if target_facing_direction < 0.0 else 1.0
 	velocity.x = forward_direction * (punch_dash_speed * UNIT_SCALE)

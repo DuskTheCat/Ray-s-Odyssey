@@ -559,6 +559,7 @@ radius = 294.4911
 
 [node name="EvilEnemy" type="CharacterBody2D" unique_id=1788415153 groups=["Enemy", "Entity"]]
 z_index = -1
+z_as_relative = false
 collision_layer = 2
 collision_mask = 4
 platform_wall_layers = 65535
@@ -673,7 +674,7 @@ target_position = Vector2(0, 0)
 collision_mask = 5
 
 [node name="StunTime" type="Timer" parent="." unique_id=412853335]
-wait_time = 0.35
+wait_time = 0.5
 one_shot = true
 
 [node name="AlertCall" type="Area2D" parent="." unique_id=23042509]

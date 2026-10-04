@@ -3,6 +3,10 @@ extends ColorRect
 var tween : Tween
 var is_entered: bool = false
 
+func _ready() -> void:
+	if get_parent().visible == false:
+		get_parent().visible = true
+
 func _on_area_2d_body_entered(body: Node2D) -> void: 
 	# FIX: Use the 'is' keyword instead of is_class()
 	if body.is_in_group("Player") and body is CharacterBody2D: 

@@ -50,6 +50,7 @@ Entity="Nodes which are alive and can die or damaged or healed."
 Player="Characters which can be, or is controlled by a Player."
 Enemy="Characters that are EVIL!!!"
 Ray="Used for effects and visuals mainly"
+CameraBoundary="Parts where if the player enters, their camera boundary get's set to it."
 
 [gui]
 

@@ -96,6 +96,7 @@ var is_ground_dashing: bool = false
 var ground_dash_direction: float = 0.0
 var extend_tween: Tween
 var modulate_tween: Tween
+var camera_boundary_tween: Tween
 var last_direction: float = 0.0
 var combo_count: int = 0
 var can_punch: bool = true
@@ -162,10 +163,11 @@ func _ready() -> void:
 		Input.emulate_mouse_from_touch = false
 	fire_bar_container.set_anchors_preset(preset, false)
 
+func _process(delta: float) -> void:
+	_process_camera_shake(delta)
+
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
-	
-	_process_camera_shake(delta)
 	
 	dash_timeout.wait_time = 0.7
 
@@ -355,7 +357,7 @@ func dash() -> void:
 		play_animation_once("Jump")
 		set_smoke_emitting(true)
 		
-		grant_invincibility(0.3)
+		grant_invincibility(0.5)
 		
 		sprite.self_modulate = Color(0.3, 0.3, 0.3, 1.0)
 		get_tree().create_timer(0.3).timeout.connect(func():
@@ -415,7 +417,7 @@ func dash() -> void:
 		launch_vector = Vector2(ground_dash_direction * dash_velocity, 0.0)
 		apply_physics_impulse(launch_vector, true)
 		
-		grant_invincibility(0.3)
+		grant_invincibility(0.5)
 		
 		sprite.self_modulate = Color(0.3, 0.3, 0.3, 1.0)
 		
@@ -448,7 +450,7 @@ func exit_ledge() -> void:
 
 # --- Camera Shake System ---
 func apply_shake(amount: float) -> void:
-	shake_trauma = clamp(shake_trauma + amount, 0.0, 1.0)
+	shake_trauma = clamp(shake_trauma + amount, 0.0, 10.0)
 
 func _process_camera_shake(delta: float) -> void:
 	if not is_instance_valid(camera) or shake_trauma <= 0.0:
@@ -477,24 +479,25 @@ func request_damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multi
 func damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multiplier: float = 1.0) -> void:
 	if current_state == State.DEAD or is_invincible and !invincibility_timer.is_stopped():
 		return
-	grant_invincibility(3.0)
+	grant_invincibility(3.4)
 
 	Health = max(Health - value, 0.0)
 	_play_hit_flash.rpc()
-	apply_shake(40000)
+	apply_shake(1.0)
 	
 	set_physics_process(false)
 	override_animations = true
-	sprite.play("Ragdoll")
-	await get_tree().create_timer(0.2).timeout
+	sprite.play("Hurt")
+	await get_tree().create_timer(0.4).timeout
 	set_physics_process(true)
-	override_animations = false
 
 	if Health <= 0.0:
 		_sync_die.rpc(origin)
 	elif origin != Vector2.ZERO:
 		var dir_x := 1.0 if origin.x < global_position.x else -1.0
-		apply_physics_impulse(Vector2(2.3 * dir_x * velocity_multiplier, -3.0 * velocity_multiplier))
+		velocity = Vector2(7.6 * ((dir_x * UNIT_SCALE) * velocity_multiplier), (-3.0 * UNIT_SCALE) * velocity_multiplier)
+		await get_tree().create_timer(0.4).timeout
+		override_animations = false
 
 func grant_invincibility(time: float = 1.0) -> void:
 	is_invincible = true
@@ -568,6 +571,7 @@ func spawn_explosion() -> void:
 	var explosion := EXPLOSION.instantiate() as Node2D
 	explosion.global_position = global_position
 	get_tree().root.add_child(explosion)
+	apply_shake(1.75)
 
 func set_smoke_emitting(emitting: bool) -> void:
 	if is_instance_valid(smoke) and is_instance_valid(smoke_2):
@@ -587,6 +591,10 @@ func update_camera_extent(dir: float) -> void:
 	extend_tween = create_tween()
 	extend_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	extend_tween.tween_property(camera_pivot, "position:x", target_x, 0.5)
+	if velocity.y > 0.0:
+		pass
+	else:
+		pass
 
 # --- Signal Connections ---
 func _on_ledge_detecor_area_area_entered(area: Area2D) -> void:
@@ -621,7 +629,7 @@ func punch() -> void:
 			_execute_finisher()
 			play_animation_once("Punch4")
 		else:
-			combo_count = 1
+			combo_count = 2
 	else:
 		punch_hitbox_activate(0.15)
 		var current_step: int = 1 if combo_count == 4 else combo_count
@@ -681,8 +689,23 @@ func _on_punch_hitbox_area_entered(area: Area2D) -> void:
 	if parent_node.is_in_group("Entity") and parent_node.is_in_group("Enemy"):
 		if parent_node.has_method("damage"):
 			parent_node.damage(20, global_position, 1, self)
-			apply_shake(100)
+			apply_shake(1.0)
 			print("Hit!")
 			var direction = -1.0 if sprite.flip_h else 1.0
 			velocity.y = -1 * UNIT_SCALE
 			velocity.x = (1 * UNIT_SCALE) * direction
+			
+func change_camera_boundaries(left: int, right: int, top: int, bottom: int) -> void:
+	if not is_instance_valid(camera) or not is_multiplayer_authority():
+		return
+	
+	camera.position_smoothing_speed = smoothness_speed * 0.6
+	
+	camera.limit_left = left
+	camera.limit_right = right
+	camera.limit_top = top
+	camera.limit_bottom = bottom
+	
+	await  get_tree().create_timer(1).timeout
+	
+	camera.position_smoothing_speed = smoothness_speed
