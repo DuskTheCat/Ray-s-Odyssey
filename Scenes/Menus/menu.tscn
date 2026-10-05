@@ -12,11 +12,15 @@ grow_vertical = 2
 script = ExtResource("1_bc13x")
 
 [node name="Label" type="Label" parent="." unique_id=966793202]
-layout_mode = 0
-offset_left = 346.0
-offset_top = 25.0
-offset_right = 1601.0
-offset_bottom = 157.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -627.5
+offset_top = 38.0
+offset_right = 627.5
+offset_bottom = 178.0
+grow_horizontal = 2
 theme_override_font_sizes/font_size = 96
 text = "GAME_TITLE"
 horizontal_alignment = 1

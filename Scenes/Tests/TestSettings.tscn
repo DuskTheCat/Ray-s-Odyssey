@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dudpf73frruhu"]
 
 [ext_resource type="Script" uid="uid://2awp1qrdpgs7" path="res://Scripts/TestSettings.gd" id="1_3oh5l"]
+[ext_resource type="Texture2D" uid="uid://cixj3birp05pl" path="res://Textures/Buttons/Mobile/Right.png" id="2_e6kta"]
 
 [node name="TestSettings" type="Control" unique_id=172054507]
 layout_mode = 3
@@ -12,10 +13,33 @@ grow_vertical = 2
 script = ExtResource("1_3oh5l")
 
 [node name="LanguageButton" type="Button" parent="." unique_id=572978804]
-layout_mode = 0
-offset_left = 341.0
-offset_top = 25.0
-offset_right = 1589.0
-offset_bottom = 181.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -624.0
+offset_top = 63.0
+offset_right = 624.0
+offset_bottom = 219.0
+grow_horizontal = 2
 theme_override_font_sizes/font_size = 96
 text = "Language"
+
+[node name="Control" type="Control" parent="." unique_id=90003440]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="Node2D" type="Node2D" parent="Control" unique_id=1977937730]
+position = Vector2(-54, 129)
+scale = Vector2(0.7745658, 0.7745658)
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="Control/Node2D" unique_id=882370161]
+position = Vector2(-127, -136)
+texture_normal = ExtResource("2_e6kta")
+action = "ui_cancel"
+visibility_mode = 1

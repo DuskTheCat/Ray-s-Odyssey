@@ -16,9 +16,11 @@ func _ready() -> void:
 
 func _on_pressed() -> void:
 	_animate(old_scale * size_multiplier_pop, pressed_tint)
+	Input.action_press(get_child(0).action)
 
 func _on_released() -> void:
 	_animate(old_scale, Color.WHITE) # Fixed the 255.0 blowout bug here
+	Input.action_release(get_child(0).action)
 
 func _animate(target_scale: Vector2, target_color: Color) -> void:
 	# Kill the previous tween if it's still running to avoid overlaps

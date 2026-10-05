@@ -346,8 +346,8 @@ func dash() -> void:
 		modulate_tween.kill()
 		
 	if Input.is_action_pressed("Move_Up") and Can_Up_Blast:
-		if fire < 20: return
-		fire -= 20.0
+		if fire < 30: return
+		fire -= 30.0
 		dash_timeout.start(0.2)
 		dash_timeout.wait_time = 0.7
 		current_movement_state = MovementState.NORMAL
@@ -411,8 +411,8 @@ func dash() -> void:
 		if current_movement_state == MovementState.ON_LEDGE:
 			exit_ledge()
 			sprite.flip_h = not sprite.flip_h
-		if fire < 20: return
-		fire -= 20.0
+		if fire < 30: return
+		fire -= 30.0
 		ground_dash_direction = -1.0 if sprite.flip_h else 1.0
 		launch_vector = Vector2(ground_dash_direction * dash_velocity, 0.0)
 		apply_physics_impulse(launch_vector, true)
@@ -641,13 +641,10 @@ func punch() -> void:
 	combo_count = (combo_count % 4) + 1
 	
 	if combo_count == 4 and Can_Flame_Burst == true:
-		if fire > 10:
-			fire -= 10
-			_execute_finisher()
-			override_animations = true
-			play_animation_once("Punch4")
-		else:
-			combo_count = 0
+		_execute_finisher()
+		override_animations = true
+		play_animation_once("Punch4")
+		combo_count = 0
 	else:
 		punch_hitbox_activate(0.15)
 		var current_step: int = 1 if combo_count == 4 else combo_count
@@ -665,6 +662,7 @@ func punch() -> void:
 			1: play_animation_once("Punch1")
 			2: play_animation_once("Punch2")
 			3: play_animation_once("Punch3")
+
 
 func punch_hitbox_activate(linger: float) -> void:
 	var hitbox : Area2D = punch_hitbox.duplicate()
