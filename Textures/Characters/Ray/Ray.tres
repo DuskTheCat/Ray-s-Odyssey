@@ -1,0 +1,8 @@
+[gd_resource type="CanvasTexture" format=3 uid="uid://x0o70vxiahas"]
+
+[ext_resource type="Texture2D" uid="uid://dwdt41ldf5loy" path="res://Textures/Characters/Ray/Ray.png" id="1_miety"]
+[ext_resource type="Texture2D" uid="uid://dfaqqjlsn4glb" path="res://Textures/Characters/Ray/Ray_n.png" id="2_ku55w"]
+
+[resource]
+diffuse_texture = ExtResource("1_miety")
+normal_texture = ExtResource("2_ku55w")

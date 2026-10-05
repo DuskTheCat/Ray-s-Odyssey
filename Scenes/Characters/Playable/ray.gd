@@ -711,7 +711,7 @@ func _on_punch_hitbox_area_entered(area: Area2D) -> void:
 			var direction = -1.0 if sprite.flip_h else 1.0
 			velocity.y = -1 * UNIT_SCALE
 			velocity.x = (1 * UNIT_SCALE) * direction
-			fire = clamp(fire + 5, 0.0, max_fire)
+			fire = clamp(fire + 10, 0.0, max_fire)
 			
 func change_camera_boundaries(left: int, right: int, top: int, bottom: int) -> void:
 	if not is_instance_valid(camera) or not is_multiplayer_authority():

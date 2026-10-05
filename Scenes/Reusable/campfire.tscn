@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://bgdtwaw00ssbn"]
+
+[ext_resource type="Texture2D" uid="uid://8xylp5juo5x4" path="res://Textures/ObjectsProps/CampfireTexture.tres" id="1_in8be"]
+
+[sub_resource type="Gradient" id="Gradient_in8be"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.7083333)
+colors = PackedColorArray(1, 0.5058824, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xhsim"]
+gradient = SubResource("Gradient_in8be")
+fill = 1
+fill_from = Vector2(0.491453, 0.47863248)
+
+[node name="Campfire" type="Node2D" unique_id=256164311]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=7420368]
+scale = Vector2(0.3064554, 0.3064554)
+texture = ExtResource("1_in8be")
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1824512477]
+energy = 2.0
+texture = SubResource("GradientTexture2D_xhsim")
+texture_scale = 12.35
