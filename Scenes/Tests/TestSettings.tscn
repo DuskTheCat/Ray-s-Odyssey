@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://2awp1qrdpgs7" path="res://Scripts/TestSettings.gd" id="1_3oh5l"]
 [ext_resource type="Texture2D" uid="uid://cixj3birp05pl" path="res://Textures/Buttons/Mobile/Right.png" id="2_e6kta"]
+[ext_resource type="PackedScene" uid="uid://b3pe5amnue0nd" path="res://Scenes/Reusable/Fade.tscn" id="3_mdjei"]
 
 [node name="TestSettings" type="Control" unique_id=172054507]
 layout_mode = 3
@@ -43,3 +44,7 @@ position = Vector2(-127, -136)
 texture_normal = ExtResource("2_e6kta")
 action = "ui_cancel"
 visibility_mode = 1
+
+[node name="Fade" parent="." unique_id=609361461 instance=ExtResource("3_mdjei")]
+visible = false
+layout_mode = 1

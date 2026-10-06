@@ -11,17 +11,17 @@ config_version=5
 [application]
 
 config/name="Ray's Oddsey"
-run/main_scene="uid://16c6ke7yf2m8"
+run/main_scene="uid://cplv32uo4sys2"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-LoadManager="*uid://7r27emuv3vu0"
 NetworkHandler="*uid://1e2qieep75fp"
 Noray="*uid://gu4bv4tgms3x"
 PacketHandshake="*uid://tt3j25a05n7c"
 Settings="*uid://bfpuw5v2gutht"
+LoadingSystem="*uid://7r27emuv3vu0"
 
 [debug]
 

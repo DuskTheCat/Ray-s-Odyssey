@@ -4,6 +4,7 @@ const MAIN_MENU = "res://Scenes/Menus/menu.tscn"
 
 @onready var resume_button: Button = $MarginContainer/VBoxContainer/Resume
 @onready var quit_button: Button = $MarginContainer/VBoxContainer/Quit
+@onready var fade: FadeColorRect = $Fade
 
 func _ready() -> void:
 	layer = 128
@@ -31,4 +32,5 @@ func _on_resume_pressed() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file(MAIN_MENU)
+	await fade.fade_in()
+	LoadingSystem.load_scene(MAIN_MENU)

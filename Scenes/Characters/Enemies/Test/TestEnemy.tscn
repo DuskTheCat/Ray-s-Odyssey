@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://bbcngyxgka3pb"]
 
 [ext_resource type="Script" uid="uid://b4tbke1bib84r" path="res://Scenes/Characters/Enemies/Test/Enemy.gd" id="1_xrjr6"]
+[ext_resource type="Shader" uid="uid://bpsaok2umuhme" path="res://Hit_Flash.gdshader" id="2_f7xgu"]
 [ext_resource type="Texture2D" uid="uid://dwdt41ldf5loy" path="res://Textures/Characters/Ray/Ray.png" id="8_ra8fa"]
 [ext_resource type="PackedScene" uid="uid://bc2vt3lu35cek" path="res://Scenes/Effects/smoke.tscn" id="9_10fef"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lk7t1"]
+shader = ExtResource("2_f7xgu")
+shader_parameter/active = false
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lmyrk"]
 atlas = ExtResource("8_ra8fa")
@@ -519,7 +524,7 @@ animations = [{
 size = Vector2(56, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1ut5v"]
-size = Vector2(143, 57)
+size = Vector2(70, 57)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xrjr6"]
 size = Vector2(127, 57)
@@ -557,6 +562,42 @@ properties/7/replication_mode = 1
 [sub_resource type="CircleShape2D" id="CircleShape2D_xhsim"]
 radius = 294.4911
 
+[sub_resource type="Animation" id="Animation_5hawl"]
+resource_name = "Hit_Flash"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteSheet:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_ly181"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteSheet:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_br1aq"]
+_data = {
+&"Hit_Flash": SubResource("Animation_5hawl"),
+&"RESET": SubResource("Animation_ly181")
+}
+
 [node name="EvilEnemy" type="CharacterBody2D" unique_id=1788415153 groups=["Enemy", "Entity"]]
 z_index = -1
 z_as_relative = false
@@ -575,6 +616,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="SpriteSheet" type="AnimatedSprite2D" parent="." unique_id=1358705930]
 visible = false
+material = SubResource("ShaderMaterial_lk7t1")
 position = Vector2(0.99999034, -6.0000086)
 scale = Vector2(0.36248603, 0.36248603)
 sprite_frames = SubResource("SpriteFrames_dvq0s")
@@ -615,7 +657,7 @@ one_shot = true
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PunchHitbox" unique_id=1205447313]
-position = Vector2(30.5, 2.5)
+position = Vector2(31, 2.5)
 shape = SubResource("RectangleShape2D_1ut5v")
 
 [node name="ReachHitbox" type="Area2D" parent="." unique_id=1289554187]
@@ -692,6 +734,9 @@ one_shot = true
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=485154268]
 rect = Rect2(-22, -39, 44, 78)
+
+[node name="Hit_Flash_Anim" type="AnimationPlayer" parent="." unique_id=391758727]
+libraries/ = SubResource("AnimationLibrary_br1aq")
 
 [connection signal="area_entered" from="LedgeDetecorArea" to="." method="_on_ledge_detecor_area_area_entered"]
 [connection signal="timeout" from="FireFill" to="." method="_on_fire_fill_timeout"]

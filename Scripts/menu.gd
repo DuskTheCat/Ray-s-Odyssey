@@ -1,29 +1,30 @@
 extends Control
-@warning_ignore("inferred_declaration")
+
 const TEST_LEVEL = "res://Scenes/Tests/TestLevel.tscn"
-@warning_ignore("inferred_declaration")
 const TEST_LEVEL_COOP = "res://Scenes/Tests/TestLevelCoop.tscn"
-@warning_ignore("inferred_declaration")
 const TEST_SETTINGS = "res://Scenes/Tests/TestSettings.tscn"
 
-# Localization stuff.
-# Valid codes come from Settings.LANGUAGES
-@export var language: String = "en":
+@onready var fade: FadeColorRect = $Fade
+
+@export var language: String = "en": 
 	set(value):
 		language = value
 		if Settings.LANGUAGES.has(value):
 			TranslationServer.set_locale(value)
 
 func _ready() -> void:
-	# Re-apply the locale after the scene is in the tree so labels refresh.
 	await get_tree().process_frame
 	TranslationServer.set_locale(TranslationServer.get_locale())
 
 func _on_button_pressed() -> void:
-	get_tree().change_scene_to_file(TEST_LEVEL)
+	_change_scene(TEST_LEVEL)
 
 func _on_button_2_pressed() -> void:
-	get_tree().change_scene_to_file(TEST_LEVEL_COOP)
+	_change_scene(TEST_LEVEL_COOP)
 
 func _on_button_3_pressed() -> void:
-	get_tree().change_scene_to_file(TEST_SETTINGS)
+	_change_scene(TEST_SETTINGS)
+
+func _change_scene(scene_path: String) -> void:
+	await fade.fade_in()
+	LoadingSystem.load_scene(scene_path)

@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://bbcngyxgka3pb" path="res://Scenes/Characters/Enemies/Test/TestEnemy.tscn" id="7_ori7k"]
 [ext_resource type="Texture2D" uid="uid://mauovob84ryo" path="res://Textures/TileSets/Test.png" id="8_4wt4f"]
 [ext_resource type="PackedScene" uid="uid://dgprua2jkxc15" path="res://Scenes/Reusable/camera_zone.tscn" id="8_sgkqs"]
-[ext_resource type="PackedScene" uid="uid://dylkxakebcq6h" path="res://Scenes/Menus/PauseMenu.tscn" id="9_1mwvq"]
 [ext_resource type="Script" uid="uid://71cisuiicucu" path="res://Scripts/Reusable/DeleteArea.gd" id="9_sgkqs"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ykv2e"]
@@ -384,8 +383,6 @@ position = Vector2(403, -1439)
 [node name="CollisionShape2D" parent="CameraZones/CameraZone4" index="0" unique_id=267871196]
 position = Vector2(-242, -123.5)
 shape = SubResource("RectangleShape2D_sgkqs")
-
-[node name="PauseMenu" parent="." unique_id=207849459 instance=ExtResource("9_1mwvq")]
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1910474246]
 visible = false

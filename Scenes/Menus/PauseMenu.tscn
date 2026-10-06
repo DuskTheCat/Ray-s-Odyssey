@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dylkxakebcq6h"]
 
 [ext_resource type="Script" uid="uid://c7bb7w4i2nxsh" path="res://Scenes/Menus/pause_menu.gd" id="1_8mfmb"]
+[ext_resource type="PackedScene" uid="uid://b3pe5amnue0nd" path="res://Scenes/Reusable/Fade.tscn" id="2_cianu"]
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=207849459]
 process_mode = 3
@@ -32,3 +33,6 @@ text = "PAUSE_RESUME"
 layout_mode = 2
 theme_override_font_sizes/font_size = 76
 text = "PAUSE_QUIT"
+
+[node name="Fade" parent="." unique_id=609361461 instance=ExtResource("2_cianu")]
+visible = false

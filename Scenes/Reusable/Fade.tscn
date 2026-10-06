@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://b3pe5amnue0nd"]
+
+[ext_resource type="Script" uid="uid://bm6oclk1tvgj1" path="res://Scripts/UI/Fade.gd" id="1_83lao"]
+
+[sub_resource type="Animation" id="Animation_f7cmk"]
+resource_name = "Fade_In"
+length = 0.6333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_vteut"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_w5y7f"]
+_data = {
+&"Fade_In": SubResource("Animation_f7cmk"),
+&"RESET": SubResource("Animation_vteut")
+}
+
+[node name="Fade" type="ColorRect" unique_id=609361461]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("1_83lao")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=107705098]
+libraries/ = SubResource("AnimationLibrary_w5y7f")

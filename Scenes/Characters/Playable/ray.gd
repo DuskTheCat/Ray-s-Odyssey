@@ -19,8 +19,8 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @export var jump_velocity: float = -8.5
 @export var gravity_multiplier: float = 2.0
 @export var speed_multiplier: float = 1.0
-@export var acceleration: float = 17.5
-@export var air_acceleration: float = 15.0
+@export var acceleration: float = 22.5
+@export var air_acceleration: float = 17.0
 @export var deceleration: float = 26.0
 @export var air_deceleration: float = 5.0
 @export var sprinting: bool = false:
@@ -84,6 +84,9 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @onready var invincibility_timer: Timer = $InvincibilityTimer
 @onready var coyote_time: Timer = $CoyoteTime
 @onready var jump_buffer: Timer = $JumpBuffer
+@onready var hit_flash_anim: AnimationPlayer = $SpriteTransformOffset/Hit_Flash_Anim
+@onready var punch_buffer: Timer = $PunchBuffer
+@onready var extended_floor_check: RayCast2D = $ExtendedFloorCheck
 
 
 # --- Private / Runtime Variables ---
@@ -103,6 +106,7 @@ var can_punch: bool = true
 var old_speed: float = -1.0
 var is_invincible: bool = false
 var is_in_ledge: bool = false
+var has_hit: bool = false
 
 # Shake variables
 var shake_trauma: float = 0.0
@@ -169,6 +173,7 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	
+	check_punch_buffer()
 	dash_timeout.wait_time = 0.7
 
 	if current_state == State.DEAD:
@@ -292,15 +297,11 @@ func _input(event: InputEvent) -> void:
 			dash()
 			
 	if event.is_action_pressed("Punch"):
-		punch()
+		punch_buffer.start()
+		check_punch_buffer()
 		
-	# --- VARIABLE JUMP HEIGHT LOGIC ---
 	if event.is_action_released("Jump"):
-		# Only cut momentum if the player is actively rising (moving upward)
 		if velocity.y < 0.0:
-			# Mulitply or clamp the velocity to cut the upward rise cleanly.
-			# Setting to a small downward value or near zero allows gravity 
-			# in _physics_process() to naturally pull the player down.
 			velocity.y = max(velocity.y, jump_velocity * UNIT_SCALE * 0.25)
 
 # --- Animation Handling ---
@@ -370,7 +371,7 @@ func dash() -> void:
 	ground_dash_direction = -1.0 if sprite.flip_h else 1.0
 	var launch_vector := Vector2(ground_dash_direction * dash_velocity, 0.0)
 	
-	if is_on_floor():
+	if is_on_floor() or extended_floor_check.is_colliding():
 		dash_timeout.start()
 		is_ground_dashing = true
 		apply_physics_impulse(launch_vector, false)
@@ -406,7 +407,7 @@ func dash() -> void:
 			if modulate_tween and modulate_tween.is_running(): modulate_tween.kill()
 			modulate_tween = create_tween()
 			modulate_tween.tween_property(sprite, "self_modulate", Color.WHITE, 0.25)
-	elif Can_Air_Dash:
+	elif Can_Air_Dash == true and !extended_floor_check.is_colliding():
 		is_ground_dashing = false
 		if current_movement_state == MovementState.ON_LEDGE:
 			exit_ledge()
@@ -539,12 +540,7 @@ func heal(value: float) -> void:
 
 @rpc("authority", "call_local", "reliable")
 func _play_hit_flash() -> void:
-	if sprite:
-		if modulate_tween and modulate_tween.is_running():
-			modulate_tween.kill()
-		sprite.self_modulate = Color.RED
-		modulate_tween = create_tween()
-		modulate_tween.tween_property(sprite, "self_modulate", Color.WHITE, 3)
+	hit_flash_anim.play("Hit_Flash")
 
 @rpc("authority", "call_local", "reliable")
 func _sync_die(origin: Vector2 = Vector2.ZERO) -> void:
@@ -638,9 +634,9 @@ func punch() -> void:
 	punch_cooldown.start()
 	
 	punch_timeout.start()
-	combo_count = (combo_count % 4) + 1
+	combo_count = (combo_count % 4) + 1 if has_hit else 1
 	
-	if combo_count == 4 and Can_Flame_Burst == true:
+	if combo_count == 4 and Can_Flame_Burst == true and has_hit == true:
 		_execute_finisher()
 		override_animations = true
 		play_animation_once("Punch4")
@@ -658,11 +654,21 @@ func punch() -> void:
 				var forward_direction: float = -1.0 if sprite.flip_h else 1.0
 				velocity.x = forward_direction * (punch_dash_speed * UNIT_SCALE)
 		
+		sprite.stop()
 		match current_step:
-			1: play_animation_once("Punch1")
-			2: play_animation_once("Punch2")
-			3: play_animation_once("Punch3")
+			1: sprite.play("Punch1")
+			2: sprite.play("Punch2")
+			3: sprite.play("Punch3")
 
+func check_punch_buffer() -> void:
+	# Ignore if no punch was buffered or timer expired
+	if punch_buffer.is_stopped():
+		return
+		
+	# Execute punch if player is free
+	if can_punch and current_state == State.NORMAL and not is_in_ledge:
+		punch_buffer.stop()
+		punch()
 
 func punch_hitbox_activate(linger: float) -> void:
 	var hitbox : Area2D = punch_hitbox.duplicate()
@@ -690,24 +696,28 @@ func _execute_finisher() -> void:
 	sprite.flip_h = not sprite.flip_h
 	spawn_explosion.rpc(true)
 	var dir_x : float = -1.0 if velocity.x > 0.0 else 1.0
-	velocity.x = (15 * UNIT_SCALE) * dir_x
+	velocity.x = (10 * UNIT_SCALE) * dir_x
 	velocity.y = 2 * UNIT_SCALE
 	
 	punch_cooldown.start(0.6)
 	punch_timeout.start(0.6)
 
 func _on_punch_cooldown_timeout() -> void:
-	punch_cooldown.wait_time = 0.3
+	punch_cooldown.wait_time = 0.35
 	can_punch = true
 	override_animations = false
 	
 	if old_speed >= 0.0:
 		speed_multiplier = old_speed
 		old_speed = -1.0
+		
+	# Trigger queued punch if player pressed punch during cooldown
+	check_punch_buffer()
 
 func _on_punch_timeout_timeout() -> void:
 	punch_timeout.wait_time = 0.5
 	combo_count = 0
+	has_hit = false
 
 func _on_punch_hitbox_area_entered(area: Area2D) -> void:
 	var parent_node = area.get_parent()
@@ -719,6 +729,7 @@ func _on_punch_hitbox_area_entered(area: Area2D) -> void:
 			velocity.y = -1 * UNIT_SCALE
 			velocity.x = (1 * UNIT_SCALE) * direction
 			fire = clamp(fire + 10, 0.0, max_fire)
+			has_hit = true
 			
 func change_camera_boundaries(left: int, right: int, top: int, bottom: int) -> void:
 	if not is_instance_valid(camera) or not is_multiplayer_authority():

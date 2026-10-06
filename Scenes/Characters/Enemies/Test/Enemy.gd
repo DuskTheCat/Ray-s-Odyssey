@@ -95,27 +95,22 @@ var link_target_velocity_x: float = 0.0
 @onready var smoke_2: GPUParticles2D = get_node_or_null("Smoke/Smoke2")
 @onready var sprite: AnimatedSprite2D = $SpriteSheet
 @onready var sprite_place_holder: ColorRect = $SpritePlaceHolder
-
 @onready var ledge_timeout: Timer = get_node_or_null("LedgeTimeout")
-
 @onready var WallRaycast: RayCast2D = $WallCheck/RayCast2D
 @onready var wall_check: Node2D = $WallCheck
 @onready var LedgeRayCast: RayCast2D = $LedgeCheck/RayCast2D
 @onready var ledge_check: Node2D = $LedgeCheck
 @onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
-
 @onready var punch_windup_time: Timer = $PunchWindUp
-
 @onready var sight: Area2D = $Sight
 @onready var ray_cast_2d: RayCast2D = $RayCast2D
-
 @onready var punch_hitbox: Area2D = $PunchHitbox
 @onready var punch_range_area: Area2D = $ReachHitbox
-
 @onready var stun_time: Timer = $StunTime
 @onready var alert_call: Area2D = $AlertCall
-
 @onready var hurt_box: Area2D = $HurtBox
+@onready var hit_flash_anim: AnimationPlayer = $Hit_Flash_Anim
+
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(1)
@@ -412,6 +407,9 @@ func punch() -> void:
 	is_punching = true
 	current_state = State.ATTACK
 	
+	var old_jump: float = jump_velocity
+	jump_velocity = 0
+	
 	if is_on_floor():
 		move_direction = 0.0
 	else:
@@ -438,6 +436,7 @@ func punch() -> void:
 	velocity.x = forward_direction * (punch_dash_speed * UNIT_SCALE)
 	
 	await get_tree().create_timer(attack_cooldown_time).timeout
+	jump_velocity = old_jump
 	_reset_attack_state()
 
 

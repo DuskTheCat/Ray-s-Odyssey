@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://cplv32uo4sys2"]
+
+[ext_resource type="Script" uid="uid://bks5na3m0a2gj" path="res://Scripts/shader_precompiler.gd" id="1_6cgen"]
+[ext_resource type="PackedScene" uid="uid://b40tmrjat0rwd" path="res://Scenes/Effects/explosion.tscn" id="2_sc43f"]
+[ext_resource type="PackedScene" uid="uid://bc2vt3lu35cek" path="res://Scenes/Effects/smoke.tscn" id="3_8bpn7"]
+[ext_resource type="PackedScene" uid="uid://dd6roex7pwm7n" path="res://Scenes/Effects/punch_effect.tscn" id="4_he14j"]
+
+[sub_resource type="Animation" id="Animation_5hawl"]
+resource_name = "Hit_Flash"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteSheet:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_ly181"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteSheet:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6cgen"]
+_data = {
+&"Hit_Flash": SubResource("Animation_5hawl"),
+&"RESET": SubResource("Animation_ly181")
+}
+
+[node name="ShaderPrecompiler" type="Node" unique_id=1326500461]
+script = ExtResource("1_6cgen")
+scenes_to_precompile = Array[PackedScene]([ExtResource("2_sc43f"), ExtResource("3_8bpn7"), ExtResource("4_he14j")])
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=104791988]
+z_index = 100
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1236113657]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=456404608]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="SubViewportContainer/SubViewport" unique_id=1561763627]
+
+[node name="Container2D" type="Node2D" parent="SubViewportContainer/SubViewport" unique_id=289781455]
+
+[node name="Hit_Flash_Anim" type="AnimationPlayer" parent="." unique_id=299877172]
+libraries/ = SubResource("AnimationLibrary_6cgen")
