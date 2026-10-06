@@ -582,13 +582,16 @@ color = Color(0, 0, 0, 1)
 
 [node name="Label" type="Label" parent="Everything" unique_id=1201633400]
 layout_mode = 1
-anchors_preset = 2
+anchors_preset = 3
+anchor_left = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1435.0
-offset_top = -170.0
-offset_right = 1698.0
-offset_bottom = -80.0
+offset_left = -476.0
+offset_top = -186.0
+offset_right = -213.0
+offset_bottom = -96.0
+grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 62
 text = "Loading.. "
