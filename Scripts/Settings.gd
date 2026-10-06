@@ -2,6 +2,20 @@ extends Node
 
 const SAVE_PATH = "user://settings.cfg"
 
+# Order here is the order the language button cycles through.
+# (Thank you Nya for the suggestion.) -Xansi
+
+## This is a dictionary for languages add any that are missing
+## then add their respective translations to translations.
+const LANGUAGES: Dictionary[String, String] = {
+	"en": "English",
+	"ja": "日本語",
+	"sv": "Svenska",
+}
+
+static func locale_name(code: String) -> String:
+	return LANGUAGES.get(code, LANGUAGES["en"])
+
 func _ready() -> void:
 	var config := ConfigFile.new()
 	if config.load(SAVE_PATH) == OK:
