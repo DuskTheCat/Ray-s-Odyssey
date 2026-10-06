@@ -145,7 +145,7 @@ func _ready() -> void:
 		health_bar.max_value = Max_Health
 		health_bar.value = Max_Health
 		
-	current_speed = walk_speed
+	current_speed = run_speed if OS.has_feature("mobile") else walk_speed
 	camera.position_smoothing_speed = smoothness_speed
 	
 	# Noise generator setup for procedural screen shake
@@ -689,9 +689,15 @@ func _execute_finisher() -> void:
 		
 	sprite.flip_h = not sprite.flip_h
 	spawn_explosion.rpc(true)
-	dash()
+	var dir_x : float = -1.0 if velocity.x > 0.0 else 1.0
+	velocity.x = (15 * UNIT_SCALE) * dir_x
+	velocity.y = 2 * UNIT_SCALE
+	
+	punch_cooldown.start(0.6)
+	punch_timeout.start(0.6)
 
 func _on_punch_cooldown_timeout() -> void:
+	punch_cooldown.wait_time = 0.3
 	can_punch = true
 	override_animations = false
 	
@@ -700,6 +706,7 @@ func _on_punch_cooldown_timeout() -> void:
 		old_speed = -1.0
 
 func _on_punch_timeout_timeout() -> void:
+	punch_timeout.wait_time = 0.5
 	combo_count = 0
 
 func _on_punch_hitbox_area_entered(area: Area2D) -> void:

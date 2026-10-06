@@ -1,7 +1,5 @@
 extends Control
 
-func _ready() -> void:
-	if OS.has_feature("Mobile"):
-		visible = true
-	else:
-		visible = false
+func _enter_tree() -> void:
+	visible = OS.has_feature("mobile")
+	print("Is mobile!") if OS.has_feature("mobile") else print("NotMobile :<")
