@@ -42,7 +42,7 @@ static func get_locale_name(code: String, default_name: String = "Unknown") -> S
 static func get_locale_index(code: String, default_index: int = 0) -> int:
 	var result = LANGUAGES.find(code)
 	if result == -1:
-		result = LANGUAGES.find(code)
+		result = LANGUAGES.find(code.substr(0, 2))
 		
 	return result if result > -1 else default_index
 
