@@ -1,8 +1,8 @@
-keys,en,ja,sv
-GAME_TITLE,Ray's Odyssey!,レイのオデッセイ!,Ray's Odyssey!
-PLAY,Play,プレイ,Spela
-PLAY_COOP,Play Co-Op,協力プレイ,Spela Co-Op
-SETTINGS,Settings,設定,Inställningar
-LANGUAGE,Language,言語,Språk
-PAUSE_RESUME,Resume,再開,Fortsätt
-PAUSE_QUIT,Quit,タイトルへ,Lämna
+keys,en,ja,sv,fr
+GAME_TITLE,Ray's Odyssey!,レイのオデッセイ!,Ray's Odyssey!,L'Odyssée de Ray!
+PLAY,Play,プレイ,Spela,Jouer
+PLAY_COOP,Play Co-Op,協力プレイ,Spela Co-Op,Jouer ensemble
+SETTINGS,Settings,設定,Inställningar,Paramètres
+LANGUAGE,Language,言語,Språk,Langue
+PAUSE_RESUME,Resume,再開,Fortsätt,Continuer
+PAUSE_QUIT,Quit,タイトルへ,Lämna,Quitter
