@@ -7,10 +7,12 @@ const TEST_LEVEL_COOP = "res://Scenes/Tests/TestLevelCoop.tscn"
 const TEST_SETTINGS = "res://Scenes/Tests/TestSettings.tscn"
 
 # Localization stuff.
-@export_enum("en", "ja", "sv") var language: String = "en":
+# Valid codes come from Settings.LANGUAGES
+@export var language: String = "en":
 	set(value):
 		language = value
-		TranslationServer.set_locale(value)
+		if Settings.LANGUAGES.has(value):
+			TranslationServer.set_locale(value)
 
 func _ready() -> void:
 	# Re-apply the locale after the scene is in the tree so labels refresh.
