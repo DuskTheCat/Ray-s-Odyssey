@@ -13,6 +13,8 @@ const TEST_SETTINGS = "res://Scenes/Tests/TestSettings.tscn"
 			TranslationServer.set_locale(value)
 
 func _ready() -> void:
+	if Input.get_connected_joypads().size() > 0:
+		$VBoxContainer/Button.grab_focus()
 	await get_tree().process_frame
 	TranslationServer.set_locale(TranslationServer.get_locale())
 

@@ -17,6 +17,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("Pause"):
 		set_paused(not visible)
 		get_viewport().set_input_as_handled()
+	if event.is_action_pressed("ui_cancel"):
+		set_paused(false)
 
 func is_online() -> bool:
 	var peer := multiplayer.multiplayer_peer
@@ -26,6 +28,8 @@ func set_paused(value: bool) -> void:
 	visible = value
 	if not is_online():
 		get_tree().paused = value
+		if Input.get_connected_joypads().size() > 0:
+			$MarginContainer/VBoxContainer/Resume.grab_focus()
 
 func _on_resume_pressed() -> void:
 	set_paused(false)

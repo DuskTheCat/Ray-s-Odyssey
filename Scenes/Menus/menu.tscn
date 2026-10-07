@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://vs8pvqdwxqh0" path="res://Scripts/menu.gd" id="1_bc13x"]
 [ext_resource type="PackedScene" uid="uid://b3pe5amnue0nd" path="res://Scenes/Reusable/Fade.tscn" id="2_b04sx"]
+[ext_resource type="Script" uid="uid://cghfvo0eyirhc" path="res://Scripts/UI/Only_Gamepad.gd" id="3_hg7h7"]
+[ext_resource type="Texture2D" uid="uid://840bfsvemh70" path="res://Textures/Controller/UI_ACCEPT.tres" id="3_v64r2"]
+[ext_resource type="Texture2D" uid="uid://cuhrjdobvlabu" path="res://Textures/Controller/UI_CANCEL.tres" id="4_hg7h7"]
 
 [node name="Menu" type="Control" unique_id=732052645]
 layout_mode = 3
@@ -58,7 +61,50 @@ text = "SETTINGS"
 visible = false
 z_index = 2
 layout_mode = 1
-mouse_filter = 2
+
+[node name="BottomRight" type="Control" parent="." unique_id=296639613]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -61.000122
+offset_top = -57.0
+offset_right = -21.000122
+offset_bottom = -17.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(1.441772, 1.441772)
+script = ExtResource("3_hg7h7")
+
+[node name="Select" type="Label" parent="BottomRight" unique_id=1926852434]
+layout_mode = 0
+offset_left = -287.0
+offset_top = -32.0
+offset_right = -109.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 38
+text = "Select"
+
+[node name="Icon" type="Sprite2D" parent="BottomRight/Select" unique_id=1393068741]
+position = Vector2(-36, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = ExtResource("3_v64r2")
+
+[node name="Cancel" type="Label" parent="BottomRight" unique_id=2099915095]
+layout_mode = 0
+offset_left = -109.0
+offset_top = -32.0
+offset_right = 69.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 38
+text = "Cancel"
+
+[node name="Icon2" type="Sprite2D" parent="BottomRight/Cancel" unique_id=1488436163]
+position = Vector2(-34, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = ExtResource("4_hg7h7")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_button_2_pressed"]

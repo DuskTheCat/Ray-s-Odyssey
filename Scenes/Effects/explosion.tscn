@@ -145,7 +145,6 @@ _data = {
 }
 
 [node name="Explosion" type="AnimatedSprite2D" unique_id=1885208380]
-position = Vector2(936, 488)
 scale = Vector2(0.46608907, 0.46608907)
 sprite_frames = SubResource("SpriteFrames_f207u")
 animation = &"Explosion"

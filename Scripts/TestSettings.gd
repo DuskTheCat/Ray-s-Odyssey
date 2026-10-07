@@ -10,6 +10,8 @@ var _is_changing_scene: bool = false
 func _ready() -> void:
 	language_button.pressed.connect(_on_language_button_pressed)
 	_update_button_text()
+	if Input.get_connected_joypads().size() > 0:
+		$LanguageButton.grab_focus()
 
 func _on_language_button_pressed() -> void:
 	var codes: Array = Settings.LANGUAGES

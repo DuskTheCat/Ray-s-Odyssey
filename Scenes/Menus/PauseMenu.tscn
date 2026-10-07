@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://c7bb7w4i2nxsh" path="res://Scenes/Menus/pause_menu.gd" id="1_8mfmb"]
 [ext_resource type="PackedScene" uid="uid://b3pe5amnue0nd" path="res://Scenes/Reusable/Fade.tscn" id="2_cianu"]
+[ext_resource type="Script" uid="uid://cghfvo0eyirhc" path="res://Scripts/UI/Only_Gamepad.gd" id="3_x6o4q"]
+[ext_resource type="Texture2D" uid="uid://840bfsvemh70" path="res://Textures/Controller/UI_ACCEPT.tres" id="4_52or0"]
+[ext_resource type="Texture2D" uid="uid://cuhrjdobvlabu" path="res://Textures/Controller/UI_CANCEL.tres" id="5_atuhp"]
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=207849459]
 process_mode = 3
@@ -36,3 +39,47 @@ text = "PAUSE_QUIT"
 
 [node name="Fade" parent="." unique_id=609361461 instance=ExtResource("2_cianu")]
 visible = false
+
+[node name="Center" type="Control" parent="." unique_id=803117962]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 223.0
+offset_top = 174.0
+offset_right = 263.0
+offset_bottom = 214.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.441772, 1.441772)
+script = ExtResource("3_x6o4q")
+
+[node name="Select" type="Label" parent="Center" unique_id=254273107]
+layout_mode = 0
+offset_left = -287.0
+offset_top = -32.0
+offset_right = -109.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 38
+text = "Select"
+
+[node name="Icon" type="Sprite2D" parent="Center/Select" unique_id=95852030]
+position = Vector2(-36, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = ExtResource("4_52or0")
+
+[node name="Cancel" type="Label" parent="Center" unique_id=1750465167]
+layout_mode = 0
+offset_left = -109.0
+offset_top = -32.0
+offset_right = 69.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 38
+text = "Cancel"
+
+[node name="Icon2" type="Sprite2D" parent="Center/Cancel" unique_id=255883806]
+position = Vector2(-34, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = ExtResource("5_atuhp")

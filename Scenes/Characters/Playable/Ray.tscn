@@ -7,11 +7,15 @@
 [ext_resource type="Script" uid="uid://c2hliddxumvm0" path="res://Scripts/FPSDisplay.gd" id="5_3nnxx"]
 [ext_resource type="Texture2D" uid="uid://drlapjn8agru3" path="res://Scenes/UI/Ray/HealthBar/Frame.png" id="5_y0mgl"]
 [ext_resource type="Texture2D" uid="uid://bkkwv2wdo8x2f" path="res://Scenes/UI/Ray/HealthBar/Bar.png" id="6_ngoau"]
-[ext_resource type="Script" uid="uid://d2pind1k6qwxm" path="res://Scripts/Textures/OnlyTouch.gd" id="7_ngoau"]
+[ext_resource type="Script" uid="uid://d2pind1k6qwxm" path="res://Scripts/UI/OnlyTouch.gd" id="7_ngoau"]
 [ext_resource type="PackedScene" uid="uid://bc2vt3lu35cek" path="res://Scenes/Effects/smoke.tscn" id="8_m765q"]
 [ext_resource type="PackedScene" uid="uid://dylkxakebcq6h" path="res://Scenes/Menus/PauseMenu.tscn" id="8_y0mgl"]
+[ext_resource type="Script" uid="uid://cghfvo0eyirhc" path="res://Scripts/UI/Only_Gamepad.gd" id="10_cpde0"]
 [ext_resource type="Texture2D" uid="uid://x0o70vxiahas" path="res://Textures/Characters/Ray/Ray.tres" id="10_y0mgl"]
+[ext_resource type="Texture2D" uid="uid://bhtlb3q1rl77l" path="res://Textures/Controller/PUNCH.tres" id="11_cpde0"]
 [ext_resource type="Shader" uid="uid://bpsaok2umuhme" path="res://Hit_Flash.gdshader" id="11_d6dwj"]
+[ext_resource type="Texture2D" uid="uid://bc6x5di0pnl5g" path="res://Textures/Controller/DASH.tres" id="12_7d30t"]
+[ext_resource type="Script" uid="uid://bq0yp4it3knoo" path="res://addons/controller_icons/objects/ControllerIconTexture.gd" id="12_h73i1"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ykv2e"]
 radius = 15.0
@@ -45,6 +49,13 @@ corner_radius_top_right = 10000
 corner_radius_bottom_right = 10000
 corner_radius_bottom_left = 10000
 corner_detail = 20
+
+[sub_resource type="Texture2D" id="Texture2D_taifd"]
+resource_local_to_scene = false
+resource_name = ""
+script = ExtResource("12_h73i1")
+path = "Sprint"
+metadata/_custom_type_script = "uid://bq0yp4it3knoo"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xhsim"]
 size = Vector2(70, 72)
@@ -760,6 +771,66 @@ text = "N/A"
 script = ExtResource("5_3nnxx")
 
 [node name="PauseMenu" parent="UI" unique_id=207849459 instance=ExtResource("8_y0mgl")]
+visible = false
+
+[node name="BottomRight" type="Control" parent="UI" unique_id=649493217]
+modulate = Color(1, 1, 1, 0.48800004)
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -61.000122
+offset_top = -57.0
+offset_right = -21.000122
+offset_bottom = -17.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(1.441772, 1.441772)
+script = ExtResource("10_cpde0")
+
+[node name="Punch" type="Label" parent="UI/BottomRight" unique_id=195378688]
+layout_mode = 0
+offset_left = -103.344955
+offset_top = -95.71554
+offset_right = 74.655045
+offset_bottom = 1.284462
+theme_override_font_sizes/font_size = 38
+text = "Punch"
+
+[node name="Icon" type="Sprite2D" parent="UI/BottomRight/Punch" unique_id=1879231159]
+position = Vector2(-36, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = ExtResource("11_cpde0")
+
+[node name="Sprint" type="Label" parent="UI/BottomRight" unique_id=1651044560]
+layout_mode = 0
+offset_left = -103.344955
+offset_top = -160.2195
+offset_right = 74.655045
+offset_bottom = -63.219498
+theme_override_font_sizes/font_size = 38
+text = "Sprint"
+
+[node name="Icon" type="Sprite2D" parent="UI/BottomRight/Sprint" unique_id=1127010449]
+position = Vector2(-36, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = SubResource("Texture2D_taifd")
+
+[node name="Dash" type="Label" parent="UI/BottomRight" unique_id=86288670]
+layout_mode = 0
+offset_left = -103.345
+offset_top = -32.0
+offset_right = 74.655
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 38
+text = "Dash"
+
+[node name="Icon" type="Sprite2D" parent="UI/BottomRight/Dash" unique_id=1534116377]
+position = Vector2(-34, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = ExtResource("12_7d30t")
 
 [node name="CamPivot" type="Node2D" parent="." unique_id=43503822]
 position = Vector2(0, -60)
@@ -790,7 +861,6 @@ one_shot = true
 
 [node name="Smoke" parent="." unique_id=932582049 instance=ExtResource("8_m765q")]
 z_index = -2
-position = Vector2(0, 0)
 
 [node name="DashTimeout" type="Timer" parent="." unique_id=945585457]
 wait_time = 0.7

@@ -107,6 +107,7 @@ var old_speed: float = -1.0
 var is_invincible: bool = false
 var is_in_ledge: bool = false
 var has_hit: bool = false
+var is_punching: bool = false
 
 # Shake variables
 var shake_trauma: float = 0.0
@@ -212,7 +213,8 @@ func _physics_process(delta: float) -> void:
 		
 		if direction != 0:
 			velocity.x = move_toward(velocity.x, direction * target_speed, accel * delta)
-			sprite.flip_h = direction < 0
+			if is_punching == false:
+				sprite.flip_h = direction < 0
 		else:
 			velocity.x = move_toward(velocity.x, 0.0, deccel * delta)
 			
@@ -631,7 +633,9 @@ func punch() -> void:
 		return
 		
 	can_punch = false
+	
 	punch_cooldown.start()
+	is_punching = true
 	
 	punch_timeout.start()
 	combo_count = (combo_count % 4) + 1 if has_hit else 1
@@ -659,6 +663,9 @@ func punch() -> void:
 			1: sprite.play("Punch1")
 			2: sprite.play("Punch2")
 			3: sprite.play("Punch3")
+	
+	await get_tree().create_timer(0.34 * get_physics_process_delta_time()).timeout
+	is_punching = false
 
 func check_punch_buffer() -> void:
 	# Ignore if no punch was buffered or timer expired
@@ -704,6 +711,7 @@ func _execute_finisher() -> void:
 
 func _on_punch_cooldown_timeout() -> void:
 	punch_cooldown.wait_time = 0.35
+	
 	can_punch = true
 	override_animations = false
 	

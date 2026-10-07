@@ -39,7 +39,6 @@ scale_curve = SubResource("CurveTexture_4qjyl")
 
 [node name="Smoke" type="Node2D" unique_id=932582049]
 z_index = 2
-position = Vector2(811, 547)
 metadata/_edit_group_ = true
 
 [node name="Smoke" type="GPUParticles2D" parent="." unique_id=14163425]

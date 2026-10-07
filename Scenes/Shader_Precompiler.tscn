@@ -43,7 +43,7 @@ _data = {
 
 [node name="ShaderPrecompiler" type="Node" unique_id=1326500461]
 script = ExtResource("1_6cgen")
-scenes_to_precompile = Array[PackedScene]([ExtResource("2_sc43f"), ExtResource("3_8bpn7"), ExtResource("4_he14j")])
+scenes_to_precompile = Array[PackedScene]([ExtResource("2_sc43f"), ExtResource("3_8bpn7"), ExtResource("4_he14j"), null])
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=104791988]
 z_index = 100

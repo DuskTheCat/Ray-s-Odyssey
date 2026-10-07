@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://2awp1qrdpgs7" path="res://Scripts/TestSettings.gd" id="1_3oh5l"]
 [ext_resource type="Texture2D" uid="uid://cixj3birp05pl" path="res://Textures/Buttons/Mobile/Right.png" id="2_e6kta"]
 [ext_resource type="PackedScene" uid="uid://b3pe5amnue0nd" path="res://Scenes/Reusable/Fade.tscn" id="3_mdjei"]
+[ext_resource type="Script" uid="uid://cghfvo0eyirhc" path="res://Scripts/UI/Only_Gamepad.gd" id="4_uxgnx"]
+[ext_resource type="Texture2D" uid="uid://840bfsvemh70" path="res://Textures/Controller/UI_ACCEPT.tres" id="5_hstkr"]
+[ext_resource type="Texture2D" uid="uid://cuhrjdobvlabu" path="res://Textures/Controller/UI_CANCEL.tres" id="6_fhwt8"]
 
 [node name="TestSettings" type="Control" unique_id=172054507]
 layout_mode = 3
@@ -48,3 +51,47 @@ visibility_mode = 1
 [node name="Fade" parent="." unique_id=609361461 instance=ExtResource("3_mdjei")]
 visible = false
 layout_mode = 1
+
+[node name="BottomRight" type="Control" parent="." unique_id=1903066977]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -61.000122
+offset_top = -57.0
+offset_right = -21.000122
+offset_bottom = -17.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(1.441772, 1.441772)
+script = ExtResource("4_uxgnx")
+
+[node name="Select" type="Label" parent="BottomRight" unique_id=368945879]
+layout_mode = 0
+offset_left = -287.0
+offset_top = -32.0
+offset_right = -109.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 38
+text = "Select"
+
+[node name="Icon" type="Sprite2D" parent="BottomRight/Select" unique_id=1822902530]
+position = Vector2(-36, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = ExtResource("5_hstkr")
+
+[node name="Cancel" type="Label" parent="BottomRight" unique_id=1087913675]
+layout_mode = 0
+offset_left = -109.0
+offset_top = -32.0
+offset_right = 69.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 38
+text = "Cancel"
+
+[node name="Icon2" type="Sprite2D" parent="BottomRight/Cancel" unique_id=547957800]
+position = Vector2(-34, 32)
+scale = Vector2(0.5193586, 0.5193586)
+texture = ExtResource("6_fhwt8")
