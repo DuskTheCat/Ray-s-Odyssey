@@ -594,7 +594,7 @@ offset_bottom = -96.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 62
-text = "Loading.. "
+text = "LOADING_SCREEN_TITLE"
 
 [node name="BottomRight" type="Control" parent="Everything" unique_id=1467024037]
 layout_mode = 1
