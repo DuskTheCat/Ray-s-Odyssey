@@ -17,8 +17,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("Pause"):
 		set_paused(not visible)
 		get_viewport().set_input_as_handled()
-	if event.is_action_pressed("ui_cancel"):
+	elif event.is_action_pressed("ui_cancel") and visible:
 		set_paused(false)
+		get_viewport().set_input_as_handled()
 
 func is_online() -> bool:
 	var peer := multiplayer.multiplayer_peer

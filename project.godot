@@ -38,7 +38,6 @@ window/size/borderless=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep_height"
 window/handheld/orientation=4
-window/vsync/vsync_mode=0
 
 [editor_plugins]
 
