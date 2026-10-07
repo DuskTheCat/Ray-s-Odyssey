@@ -28,4 +28,3 @@ involved with netfox:
 
 [netfox]: https://github.com/foxssake/netfox
 [Fox's Sake Studio]: https://github.com/foxssake/
-
