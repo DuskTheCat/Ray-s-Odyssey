@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://34lxo0i6v7iy"]
 
 [ext_resource type="Script" uid="uid://bdcopiu8sivws" path="res://Scripts/Co-Op_Mode/network_ui.gd" id="1_pkr8v"]
+[ext_resource type="Script" uid="uid://bmd51fdjt75n4" path="res://Scripts/Profile/player_list.gd" id="2_5w6eu"]
 
 [node name="NetworkUI" type="Control" unique_id=1570128733]
 layout_mode = 3
@@ -10,6 +11,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_pkr8v")
+
+[node name="PlayerList" type="VBoxContainer" parent="." unique_id=943862898]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 15.0
+offset_right = 106.0
+offset_bottom = 104.0
+script = ExtResource("2_5w6eu")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2024802963]
 layout_mode = 1

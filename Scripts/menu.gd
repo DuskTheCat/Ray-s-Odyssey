@@ -18,6 +18,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	TranslationServer.set_locale(TranslationServer.get_locale())
 
+
 func _on_button_pressed() -> void:
 	_change_scene(TEST_LEVEL)
 
@@ -30,3 +31,6 @@ func _on_button_3_pressed() -> void:
 func _change_scene(scene_path: String) -> void:
 	await fade.fade_in()
 	LoadingSystem.load_scene(scene_path)
+	
+func _on_profile_pressed() -> void:
+	add_child(ProfileEditor.new())

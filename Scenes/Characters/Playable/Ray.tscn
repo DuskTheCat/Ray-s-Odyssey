@@ -16,6 +16,8 @@
 [ext_resource type="Shader" uid="uid://bpsaok2umuhme" path="res://Hit_Flash.gdshader" id="11_d6dwj"]
 [ext_resource type="Texture2D" uid="uid://bc6x5di0pnl5g" path="res://Textures/Controller/DASH.tres" id="12_7d30t"]
 [ext_resource type="Script" uid="uid://bq0yp4it3knoo" path="res://addons/controller_icons/objects/ControllerIconTexture.gd" id="12_h73i1"]
+[ext_resource type="Script" uid="uid://b1cenrtbrwnvk" path="res://Scripts/Profile/nametag.gd" id="17_h73i1"]
+[ext_resource type="FontFile" uid="uid://bcrjduvhkhlc8" path="res://Noto_Sans_JP/static/NotoSansJP-Bold.ttf" id="18_taifd"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ykv2e"]
 radius = 15.0
@@ -764,8 +766,10 @@ anchors_preset = 0
 
 [node name="Label" type="Label" parent="UI/Debug/FPS" unique_id=1670950558]
 layout_mode = 0
-offset_right = 125.0
-offset_bottom = 47.0
+offset_left = 31.0
+offset_top = 971.0
+offset_right = 156.0
+offset_bottom = 1050.0
 theme_override_font_sizes/font_size = 54
 text = "N/A"
 script = ExtResource("5_3nnxx")
@@ -924,6 +928,12 @@ one_shot = true
 
 [node name="ExtendedFloorCheck" type="RayCast2D" parent="." unique_id=1699831569]
 target_position = Vector2(0, 74)
+
+[node name="NameTag" type="Node2D" parent="." unique_id=909182025]
+position = Vector2(0, -54)
+script = ExtResource("17_h73i1")
+font = ExtResource("18_taifd")
+metadata/_custom_type_script = "uid://b1cenrtbrwnvk"
 
 [connection signal="tree_exited" from="." to="." method="_on_tree_exited"]
 [connection signal="area_entered" from="LedgeDetecorArea" to="." method="_on_ledge_detecor_area_area_entered"]

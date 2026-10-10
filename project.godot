@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+PlayerProfile="*uid://3trl860ewlyr"
 NetworkHandler="*uid://1e2qieep75fp"
 Noray="*uid://gu4bv4tgms3x"
 PacketHandshake="*uid://tt3j25a05n7c"
