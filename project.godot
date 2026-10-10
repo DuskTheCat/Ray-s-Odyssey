@@ -27,6 +27,7 @@ ControllerIcons="*uid://bol6xnunhr2ne"
 
 [debug]
 
+settings/stdout/verbose_stdout=true
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/inferred_declaration=1
 
@@ -51,6 +52,7 @@ Entity="Nodes which are alive and can die or damaged or healed."
 Player="Characters which can be, or is controlled by a Player."
 Enemy="Characters that are EVIL!!!"
 Ray="Used for effects and visuals mainly"
+Interact=":3"
 
 [gui]
 
@@ -147,5 +149,7 @@ rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
+2d/shadow_atlas/size=1024
 viewport/hdr_2d=true
 anti_aliasing/quality/msaa_2d=2
+2d/stdout/verbose_stdout=false

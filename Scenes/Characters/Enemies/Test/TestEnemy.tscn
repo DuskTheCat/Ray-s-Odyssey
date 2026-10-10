@@ -637,7 +637,6 @@ one_shot = true
 
 [node name="Smoke" parent="." unique_id=932582049 instance=ExtResource("9_10fef")]
 z_index = -2
-position = Vector2(0, 0)
 
 [node name="DashTimeout" type="Timer" parent="." unique_id=945585457]
 wait_time = 0.5
@@ -678,9 +677,9 @@ shape = SubResource("CapsuleShape2D_ykv2e")
 shape = SubResource("CapsuleShape2D_ykv2e")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1392093836]
-target_desired_distance = 24.0
 navigation_layers = 4
-simplify_path = true
+path_postprocessing = 2
+simplify_epsilon = 10.0
 radius = 16.0
 avoidance_layers = 2
 avoidance_mask = 2
@@ -688,7 +687,7 @@ avoidance_mask = 2
 [node name="WallCheck" type="Node2D" parent="." unique_id=743923932]
 
 [node name="RayCast2D" type="RayCast2D" parent="WallCheck" unique_id=1490666516]
-target_position = Vector2(50, 0)
+target_position = Vector2(49, 0)
 collision_mask = 6
 
 [node name="LedgeCheck" type="Node2D" parent="." unique_id=1293633596]

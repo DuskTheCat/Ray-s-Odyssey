@@ -91,6 +91,9 @@ properties/6/replication_mode = 1
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1ut5v"]
 size = Vector2(110, 59)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_edcsb"]
+size = Vector2(22, 68)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ngoau"]
 shader = ExtResource("11_d6dwj")
 shader_parameter/active = false
@@ -895,6 +898,15 @@ shape = SubResource("RectangleShape2D_1ut5v")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=1113866002]
 shape = SubResource("CapsuleShape2D_ykv2e")
 
+[node name="Interact" type="Area2D" parent="." unique_id=598713945 groups=["Interact"]]
+collision_layer = 65535
+collision_mask = 65535
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interact" unique_id=623149929]
+shape = SubResource("RectangleShape2D_edcsb")
+
 [node name="SpriteTransformOffset" type="Node2D" parent="." unique_id=1947431547]
 position = Vector2(0, 39)
 
@@ -903,8 +915,7 @@ material = SubResource("ShaderMaterial_ngoau")
 position = Vector2(0.99999034, -45.000008)
 scale = Vector2(0.36248603, 0.36248603)
 sprite_frames = SubResource("SpriteFrames_3vv8y")
-animation = &"Fall"
-frame = 3
+animation = &"Idle"
 offset = Vector2(-1.2912111, -2.758667)
 
 [node name="Hit_Flash_Anim" type="AnimationPlayer" parent="SpriteTransformOffset" unique_id=615880302]

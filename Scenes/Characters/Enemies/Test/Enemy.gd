@@ -688,7 +688,6 @@ func _recover_from_physics_state() -> void:
 func jump() -> void:
 	if is_on_floor() and current_movement_state == MovementState.NORMAL and current_state != State.DEAD and current_state != State.STUNNED:
 		velocity.y = jump_velocity * UNIT_SCALE
-		is_jumping_detour = true
 
 func apply_impulse(impulse_velocity: Vector2, linger: float) -> void:
 	if current_state == State.DEAD:

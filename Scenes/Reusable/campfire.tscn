@@ -1,6 +1,14 @@
 [gd_scene format=3 uid="uid://bgdtwaw00ssbn"]
 
 [ext_resource type="Texture2D" uid="uid://8xylp5juo5x4" path="res://Textures/ObjectsProps/CampfireTexture.tres" id="1_in8be"]
+[ext_resource type="Script" uid="uid://ciepsyejd2vlb" path="res://Scripts/Mechanics/Campfire.gd" id="1_nb6ps"]
+[ext_resource type="Script" uid="uid://c2y6l326plroc" path="res://Scripts/Reusable/LightOcculder.gd" id="2_imfb7"]
+[ext_resource type="Shader" uid="uid://k4fejjkb8gpv" path="res://Shaders/Textures/fire.gdshader" id="3_mgy4c"]
+[ext_resource type="Texture2D" uid="uid://drkrr7tuygtqo" path="res://Textures/Noise/T_VFX_Noise_465.png" id="4_nb6ps"]
+[ext_resource type="Texture2D" uid="uid://b0xiw2i357sp5" path="res://Textures/Noise/T_Gradient_circle22.jpg" id="5_lrh5t"]
+[ext_resource type="Texture2D" uid="uid://c7t1s788d4eb7" path="res://Textures/Noise/T_1_pixel.jpg" id="6_0b3n3"]
+[ext_resource type="PackedScene" uid="uid://hriab1e7omym" path="res://Scenes/Reusable/InteractLabel.tscn" id="8_lrh5t"]
+[ext_resource type="Texture2D" uid="uid://cho3shol3rky2" path="res://addons/godot-rapier2d/Radial2D.svg" id="9_lrh5t"]
 
 [sub_resource type="Gradient" id="Gradient_in8be"]
 interpolation_mode = 2
@@ -12,13 +20,376 @@ gradient = SubResource("Gradient_in8be")
 fill = 1
 fill_from = Vector2(0.491453, 0.47863248)
 
-[node name="Campfire" type="Node2D" unique_id=256164311]
+[sub_resource type="Gradient" id="Gradient_cx4gb"]
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=7420368]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_imfb7"]
+gradient = SubResource("Gradient_cx4gb")
+fill_to = Vector2(0, 0.2863248)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mgy4c"]
+shader = ExtResource("3_mgy4c")
+shader_parameter/fire_scale = Vector2(1, 1)
+shader_parameter/fire_speed_direction = Vector2(0, 1)
+shader_parameter/intensity_multiplier = 10.0
+shader_parameter/glow_intensity = 2.0
+shader_parameter/enable_toon = true
+shader_parameter/toon_levels = 1
+shader_parameter/toon_cutoff = 0.2250000106875
+shader_parameter/desired_color = Color(1, 0, 0, 1)
+shader_parameter/fire_noise = ExtResource("4_nb6ps")
+shader_parameter/fire_height_gradient = SubResource("GradientTexture2D_imfb7")
+shader_parameter/fire_shape_gradient = ExtResource("5_lrh5t")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nb6ps"]
+shader = ExtResource("3_mgy4c")
+shader_parameter/fire_scale = Vector2(1.605, 1.805)
+shader_parameter/fire_speed_direction = Vector2(0, 1)
+shader_parameter/intensity_multiplier = 2.2650001075875
+shader_parameter/glow_intensity = 2.0
+shader_parameter/enable_toon = true
+shader_parameter/toon_levels = 1
+shader_parameter/toon_cutoff = 0.2250000106875
+shader_parameter/desired_color = Color(1, 0, 0, 1)
+shader_parameter/fire_noise = ExtResource("4_nb6ps")
+shader_parameter/fire_height_gradient = SubResource("GradientTexture2D_imfb7")
+shader_parameter/fire_shape_gradient = ExtResource("5_lrh5t")
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2brg6"]
+gradient = SubResource("Gradient_cx4gb")
+fill_to = Vector2(0, 0.5470086)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xhsim"]
+shader = ExtResource("3_mgy4c")
+shader_parameter/fire_scale = Vector2(1.41, 1.44)
+shader_parameter/fire_speed_direction = Vector2(0, 1)
+shader_parameter/intensity_multiplier = 7.7910003700725
+shader_parameter/glow_intensity = 1.0000000475
+shader_parameter/enable_toon = true
+shader_parameter/toon_levels = 1
+shader_parameter/toon_cutoff = 0.10000000475
+shader_parameter/desired_color = Color(1, 0.35253903, 0, 1)
+shader_parameter/fire_noise = ExtResource("4_nb6ps")
+shader_parameter/fire_height_gradient = SubResource("GradientTexture2D_2brg6")
+shader_parameter/fire_shape_gradient = ExtResource("5_lrh5t")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wihut"]
+shader = ExtResource("3_mgy4c")
+shader_parameter/fire_scale = Vector2(1, 1)
+shader_parameter/fire_speed_direction = Vector2(0, 1)
+shader_parameter/intensity_multiplier = 10.0
+shader_parameter/glow_intensity = 8.6350004101625
+shader_parameter/enable_toon = true
+shader_parameter/toon_levels = 1
+shader_parameter/toon_cutoff = 0.1150000054625
+shader_parameter/desired_color = Color(1, 1, 0, 1)
+shader_parameter/fire_noise = ExtResource("4_nb6ps")
+shader_parameter/fire_height_gradient = SubResource("GradientTexture2D_2brg6")
+shader_parameter/fire_shape_gradient = ExtResource("5_lrh5t")
+
+[sub_resource type="Animation" id="Animation_0b3n3"]
+resource_name = "Light"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fire3:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.2332583, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Fire4:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.2332583, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Fire:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.2332583, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Fire2:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.2332583, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PointLight2D:energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 2.0]
+}
+
+[sub_resource type="Animation" id="Animation_cx4gb"]
+resource_name = "PutOut"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fire3:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Fire4:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Fire:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Fire2:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PointLight2D:energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [2.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_wihut"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fire3:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Fire4:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Fire:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Fire2:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PointLight2D:energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5a0nn"]
+_data = {
+&"Light": SubResource("Animation_0b3n3"),
+&"PutOut": SubResource("Animation_cx4gb"),
+&"RESET": SubResource("Animation_wihut")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eopg3"]
+size = Vector2(502, 233)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nb6ps"]
+size = Vector2(134, 102)
+
+[sub_resource type="Curve" id="Curve_0b3n3"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.70574, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ykv2e"]
+curve = SubResource("Curve_0b3n3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xhsim"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_max = 122.1
+gravity = Vector3(0, -90, 0)
+scale_min = 0.19999999
+scale_max = 0.45
+scale_curve = SubResource("CurveTexture_ykv2e")
+
+[node name="Campfire" type="Node2D" unique_id=256164311]
+script = ExtResource("1_nb6ps")
+
+[node name="Logs" type="Sprite2D" parent="." unique_id=7420368]
 scale = Vector2(0.3064554, 0.3064554)
 texture = ExtResource("1_in8be")
 
-[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1824512477]
-energy = 2.0
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1824512477 node_paths=PackedStringArray("visible_on_screen_notifier2d")]
+energy = 0.0
 texture = SubResource("GradientTexture2D_xhsim")
 texture_scale = 12.35
+height = 25.0
+script = ExtResource("2_imfb7")
+visible_on_screen_notifier2d = NodePath("VisibleOnScreenNotifier2D")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="PointLight2D" unique_id=581823400]
+scale = Vector2(54.73265, 54.73265)
+
+[node name="Fire3" type="Sprite2D" parent="." unique_id=1086232584]
+modulate = Color(1, 1, 1, 0)
+z_index = -1
+material = SubResource("ShaderMaterial_mgy4c")
+position = Vector2(0, -9.536743e-07)
+scale = Vector2(151.08385, 76.951164)
+texture = ExtResource("6_0b3n3")
+
+[node name="Fire4" type="Sprite2D" parent="." unique_id=1728327796]
+modulate = Color(1, 1, 1, 0)
+z_index = -1
+material = SubResource("ShaderMaterial_nb6ps")
+position = Vector2(-2, -26)
+scale = Vector2(151.08385, 76.951164)
+texture = ExtResource("6_0b3n3")
+
+[node name="Fire" type="Sprite2D" parent="." unique_id=1771590678]
+modulate = Color(1, 1, 1, 0)
+z_index = -1
+material = SubResource("ShaderMaterial_xhsim")
+position = Vector2(1, -7.9999995)
+scale = Vector2(109.04099, 85.92671)
+texture = ExtResource("6_0b3n3")
+
+[node name="Fire2" type="Sprite2D" parent="." unique_id=1079545877]
+modulate = Color(1, 1, 1, 0)
+z_index = -1
+material = SubResource("ShaderMaterial_wihut")
+position = Vector2(0, 7)
+scale = Vector2(72.4846, 51.023212)
+texture = ExtResource("6_0b3n3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1340986458]
+libraries/ = SubResource("AnimationLibrary_5a0nn")
+
+[node name="LightArea" type="Area2D" parent="." unique_id=371920265]
+z_index = -1
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LightArea" unique_id=234391258]
+position = Vector2(0, -82.5)
+shape = SubResource("RectangleShape2D_eopg3")
+
+[node name="InteractArea" type="Area2D" parent="." unique_id=1164556501]
+z_index = -1
+collision_layer = 65535
+collision_mask = 65535
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=1993623359]
+position = Vector2(0, -17)
+shape = SubResource("RectangleShape2D_nb6ps")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=248372208]
+emitting = false
+amount = 30
+texture = ExtResource("9_lrh5t")
+lifetime = 2.0
+one_shot = true
+speed_scale = 1.8
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_xhsim")
+
+[node name="InteractLabel" parent="." unique_id=748428496 instance=ExtResource("8_lrh5t")]
+offset_top = -66.0
+offset_bottom = -66.0
+
+[connection signal="body_entered" from="LightArea" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="LightArea" to="." method="_on_area_2d_body_exited"]
+[connection signal="area_entered" from="InteractArea" to="." method="_on_interact_area_area_entered"]
+[connection signal="body_entered" from="InteractArea" to="." method="_on_interact_area_body_entered"]
+[connection signal="body_exited" from="InteractArea" to="." method="_on_interact_area_body_exited"]

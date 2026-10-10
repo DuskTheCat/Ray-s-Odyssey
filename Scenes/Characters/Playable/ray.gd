@@ -87,6 +87,7 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @onready var hit_flash_anim: AnimationPlayer = $SpriteTransformOffset/Hit_Flash_Anim
 @onready var punch_buffer: Timer = $PunchBuffer
 @onready var extended_floor_check: RayCast2D = $ExtendedFloorCheck
+@onready var interact: Area2D = $Interact
 
 
 # --- Private / Runtime Variables ---
@@ -305,7 +306,19 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_released("Jump"):
 		if velocity.y < 0.0:
 			velocity.y = max(velocity.y, jump_velocity * UNIT_SCALE * 0.25)
-
+	
+	if Input.is_action_just_pressed("Move_Up") and is_on_floor():
+		(func() -> void:
+			var interactbloc : Area2D = interact.duplicate()
+			interactbloc.global_position = global_position
+			interactbloc.monitorable = true
+			interactbloc.show()
+			interactbloc.add_to_group("Interact")
+			get_tree().root.add_child(interactbloc)
+			await get_tree().create_timer(0.04).timeout
+			interactbloc.queue_free()
+		).call_deferred()
+	
 # --- Animation Handling ---
 func update_animation() -> void:
 	if not is_multiplayer_authority() or current_state == State.DEAD: return

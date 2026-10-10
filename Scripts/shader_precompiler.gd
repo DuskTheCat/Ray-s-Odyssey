@@ -30,7 +30,7 @@ func start_precompilation() -> void:
 			container_2d.add_child(rect)
 
 	# 3. Wait 2 frames for Godot's RenderingServer to build the CanvasItem shaders
-	await get_tree().process_frame
+	await get_tree().create_timer(0.2 * get_process_delta_time())
 	await RenderingServer.frame_post_draw
 
 	# 4. Clean up temporary nodes

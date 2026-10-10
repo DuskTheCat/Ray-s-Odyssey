@@ -18,7 +18,7 @@ func fade_in() -> void:
 	fade_finished.emit()
 
 func fade_out() -> void:
-	if animation_player.current_animation_position == 0.0:
+	if animation_player.current_animation and animation_player.current_animation_position == 0.0:
 		var anim_length = animation_player.get_animation("Fade_In").length
 		animation_player.seek(anim_length, true)
 		
