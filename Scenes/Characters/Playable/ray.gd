@@ -2,83 +2,10 @@ class_name PlayerController
 extends CharacterBody2D
 
 # --- Constants & Enums ---
+# Only things that shouldn't be tweaked at runtime / in the inspector stay as constants.
 const UNIT_SCALE: float = 100.0
 const EXPLOSION: PackedScene = preload("res://Scenes/Effects/explosion.tscn")
 const PUNCH_EFFECT: PackedScene = preload("res://Scenes/Effects/punch_effect.tscn")
-
-# Movement feel
-const JUMP_CUT_MULTIPLIER: float = 0.25        # Fraction of jump velocity kept when jump is released early
-const RUN_ANIM_SPEED: float = 1.9              # Speed (units) at which Walk becomes Run
-const INTERACT_LIFETIME: float = 0.04          # Seconds the temporary interact area exists
-
-# Dash (shared)
-const DASH_FIRE_COST: float = 30.0
-const DASH_COOLDOWN: float = 0.7
-const DASH_TINT: Color = Color(0.3, 0.3, 0.3, 1.0)
-
-# Up blast
-const UP_BLAST_TIME: float = 0.2
-const UP_BLAST_INVINCIBILITY: float = 0.5
-const UP_BLAST_TINT_HOLD: float = 0.3
-const UP_BLAST_TINT_FADE: float = 0.15
-
-# Ground dash
-const GROUND_DASH_INVINCIBILITY: float = 0.3
-const GROUND_DASH_RECOVERY_DELAY: float = 0.05
-const GROUND_DASH_TINT_FADE: float = 0.15
-const GROUND_DASH_AIR_COOLDOWN: float = 0.3    # Cooldown if the ground dash carries you off a ledge
-const GROUND_DASH_AIR_TINT_FADE: float = 0.25
-
-# Air dash
-const AIR_DASH_INVINCIBILITY: float = 0.5
-
-# Ragdoll / physics object
-const RAGDOLL_SPIN_DEGREES: float = 20.0
-const RAGDOLL_STOP_SPEED: float = 0.5          # Speed (units) below which ragdoll ends
-
-# Damage & invincibility
-const DAMAGE_INVINCIBILITY: float = 2.4
-const HURT_STUN_TIME: float = 0.4
-const KNOCKBACK_RECOVERY_TIME: float = 0.4
-const KNOCKBACK_X: float = 7.6
-const KNOCKBACK_Y: float = -3.0
-const FLASH_INTERVAL: float = 0.1              # Used to work out how many flash loops fit in a duration
-const FLASH_STEP_TIME: float = 0.05
-const FLASH_MIN_ALPHA: float = 0.3
-const HIT_EFFECT_JITTER: int = 5
-const HIT_EFFECT_SCALE_MIN: float = 1.0
-const HIT_EFFECT_SCALE_MAX: float = 2.4
-const DEATH_COLLISION_LAYER: int = 1
-const DEATH_FADE_DELAY_FACTOR: float = 0.5     # Fraction of despawn time before fade starts
-
-# Punch / combo
-const COMBO_MAX: int = 4
-const PUNCH_DAMAGE: float = 20.0
-const PUNCH_HITBOX_LINGER: float = 0.15
-const PUNCH_LOCK_FACTOR: float = 0.34          # Multiplied by physics delta to unlock is_punching
-const PUNCH_HIT_FIRE_GAIN: float = 10.0
-const PUNCH_HIT_RECOIL_Y: float = -1.0
-const PUNCH_HIT_PUSH_X: float = 1.0
-const PUNCH_COOLDOWN_NEXT: float = 0.35        # wait_time applied after first cooldown
-const PUNCH_TIMEOUT_NEXT: float = 0.5          # wait_time applied after first combo timeout
-
-# Finisher
-const FINISHER_DELAY: float = 0.2
-const FINISHER_KNOCKBACK_SPEED: float = 10.0
-const FINISHER_DOWN_SPEED: float = 2.0
-const FINISHER_LOCKOUT: float = 0.6
-const FINISHER_HEAL: float = 5.0
-
-# Camera & shake
-const SHAKE_MAX_TRAUMA: float = 10.0
-const SHAKE_NOISE_FREQUENCY: float = 0.1
-const SHAKE_TIME_SCALE: float = 0.05
-const SHAKE_HIT: float = 1.0
-const SHAKE_EXPLOSION: float = 1.75
-const SHAKE_PUNCH_HIT: float = 1.0
-const CAMERA_EXTEND_TWEEN_TIME: float = 0.5
-const CAMERA_BOUNDARY_SMOOTHING_FACTOR: float = 0.6
-const CAMERA_BOUNDARY_TRANSITION_TIME: float = 1.0
 
 enum State { NORMAL, CUTSCENE, DEAD }
 enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
@@ -125,6 +52,8 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @export_group("Death Impulse")
 @export var death_launch_force: Vector2 = Vector2(4.0, -7.0)
 @export var death_despawn_time: float = 2.0
+@export_range(1, 32) var death_collision_layer: int = 1
+@export_range(0.0, 1.0, 0.01) var death_fade_delay_factor: float = 0.5  ## Fraction of despawn time before fade starts
 
 @export_group("State")
 @export var current_state: State = State.NORMAL
@@ -137,6 +66,80 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @export var shake_decay: float = 5.0
 @export var max_offset: Vector2 = Vector2(12.0, 8.0)
 @export var max_roll: float = 0.05
+@export var shake_max_trauma: float = 10.0
+@export var shake_noise_frequency: float = 0.1
+@export var shake_time_scale: float = 0.05
+@export var shake_hit: float = 1.0
+@export var shake_explosion: float = 1.75
+@export var shake_punch_hit: float = 1.0
+@export var camera_extend_tween_time: float = 0.5
+@export var camera_boundary_smoothing_factor: float = 0.6
+@export var camera_boundary_transition_time: float = 1.0
+
+@export_group("Movement Feel")
+@export_range(0.0, 1.0, 0.01) var jump_cut_multiplier: float = 0.25  ## Fraction of jump velocity kept when jump is released early
+@export var run_anim_speed: float = 1.9      ## Speed (units) at which Walk becomes Run
+@export var interact_lifetime: float = 0.04  ## Seconds the temporary interact area exists
+
+@export_group("Dash")
+@export var dash_fire_cost: float = 30.0
+@export var dash_cooldown: float = 0.7
+@export var dash_tint: Color = Color(0.3, 0.3, 0.3, 1.0)
+
+@export_subgroup("Up Blast")
+@export var up_blast_time: float = 0.2
+@export var up_blast_invincibility: float = 0.5
+@export var up_blast_tint_hold: float = 0.3
+@export var up_blast_tint_fade: float = 0.15
+
+@export_subgroup("Ground Dash")
+@export var ground_dash_invincibility: float = 0.3
+@export var ground_dash_recovery_delay: float = 0.05
+@export var ground_dash_tint_fade: float = 0.15
+@export var ground_dash_air_cooldown: float = 0.3  ## Cooldown if the ground dash carries you off a ledge
+@export var ground_dash_air_tint_fade: float = 0.25
+
+@export_subgroup("Air Dash")
+@export var air_dash_invincibility: float = 0.5
+
+@export_group("Ragdoll")
+@export var ragdoll_spin_degrees: float = 20.0
+@export var ragdoll_stop_speed: float = 0.5  ## Speed (units) below which ragdoll ends
+
+@export_group("Damage & Invincibility")
+@export var damage_invincibility: float = 2.4
+@export var hurt_stun_time: float = 0.4
+@export var knockback_recovery_time: float = 0.4
+@export var knockback_x: float = 7.6
+@export var knockback_y: float = -3.0
+
+@export_subgroup("Flash")
+@export var flash_interval: float = 0.1  ## Used to work out how many flash loops fit in a duration
+@export var flash_step_time: float = 0.05
+@export_range(0.0, 1.0, 0.01) var flash_min_alpha: float = 0.3
+
+@export_subgroup("Hit Effect")
+@export var hit_effect_jitter: int = 5
+@export var hit_effect_scale_min: float = 1.0
+@export var hit_effect_scale_max: float = 2.4
+
+@export_group("Punch & Combo")
+@export_range(1, 10) var combo_max: int = 4
+@export var punch_damage: float = 20.0
+@export var punch_hitbox_linger: float = 0.15
+@export var punch_lock_factor: float = 0.34  ## Multiplied by physics delta to unlock is_punching
+@export var punch_hit_fire_gain: float = 10.0
+@export var punch_hit_recoil_y: float = -1.0
+@export var punch_hit_push_x: float = 1.0
+@export var punch_cooldown_next: float = 0.35  ## wait_time applied after first cooldown
+@export var punch_timeout_next: float = 0.5    ## wait_time applied after first combo timeout
+
+@export_subgroup("Finisher")
+@export var finisher_delay: float = 0.2
+@export var finisher_knockback_speed: float = 10.0
+@export var finisher_down_speed: float = 2.0
+@export var finisher_lockout: float = 0.6
+@export var finisher_heal: float = 5.0
 
 # --- Onready Nodes ---
 @onready var dash_timeout: Timer = $DashTimeout
@@ -230,7 +233,7 @@ func _ready() -> void:
 	
 	# Noise generator setup for procedural screen shake
 	noise.seed = randi()
-	noise.frequency = SHAKE_NOISE_FREQUENCY
+	noise.frequency = shake_noise_frequency
 	
 	if invincibility_timer and not invincibility_timer.timeout.is_connected(_on_invincibility_timer_timeout):
 		invincibility_timer.timeout.connect(_on_invincibility_timer_timeout)
@@ -250,7 +253,7 @@ func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	
 	check_punch_buffer()
-	dash_timeout.wait_time = DASH_COOLDOWN
+	dash_timeout.wait_time = dash_cooldown
 
 	if current_state == State.DEAD:
 		_process_death_movement(delta)
@@ -316,7 +319,7 @@ func _physics_process(delta: float) -> void:
 		if not is_on_floor():
 			set_smoke_emitting(true)
 			play_animation_once("Ragdoll")
-			sprite.rotate(deg_to_rad(RAGDOLL_SPIN_DEGREES if velocity.x > 0 else -RAGDOLL_SPIN_DEGREES))
+			sprite.rotate(deg_to_rad(ragdoll_spin_degrees if velocity.x > 0 else -ragdoll_spin_degrees))
 		else:
 			set_smoke_emitting(is_air_dash_ragdoll and not is_ground_dashing)
 			play_animation_once("Dash")
@@ -347,7 +350,7 @@ func _physics_process(delta: float) -> void:
 			var friction_reduction := (deceleration if is_on_floor() else air_deceleration) * physics_friction
 			velocity.x = move_toward(velocity.x, 0.0, friction_reduction * delta)
 			
-			if abs(velocity.x) < RAGDOLL_STOP_SPEED * UNIT_SCALE:
+			if abs(velocity.x) < ragdoll_stop_speed * UNIT_SCALE:
 				current_movement_state = MovementState.NORMAL
 				override_animations = false
 				sprite.rotation = 0.0
@@ -379,7 +382,7 @@ func _input(event: InputEvent) -> void:
 		
 	if event.is_action_released("Jump"):
 		if velocity.y < 0.0:
-			velocity.y = max(velocity.y, jump_velocity * UNIT_SCALE * JUMP_CUT_MULTIPLIER)
+			velocity.y = max(velocity.y, jump_velocity * UNIT_SCALE * jump_cut_multiplier)
 	
 	if Input.is_action_just_pressed("Move_Up") and is_on_floor():
 		(func() -> void:
@@ -389,7 +392,7 @@ func _input(event: InputEvent) -> void:
 			interactbloc.show()
 			interactbloc.add_to_group("Interact")
 			get_tree().root.add_child(interactbloc)
-			await get_tree().create_timer(INTERACT_LIFETIME).timeout
+			await get_tree().create_timer(interact_lifetime).timeout
 			interactbloc.queue_free()
 		).call_deferred()
 	
@@ -404,7 +407,7 @@ func update_animation() -> void:
 			if velocity.x == 0:
 				sprite.play("Idle")
 			else:
-				sprite.play("Walk" if abs(velocity.x) < (RUN_ANIM_SPEED * UNIT_SCALE) else "Run")
+				sprite.play("Walk" if abs(velocity.x) < (run_anim_speed * UNIT_SCALE) else "Run")
 		else:
 			sprite.play("Jump" if velocity.y < 0 else "Fall")
 	elif current_movement_state == MovementState.ON_LEDGE:
@@ -436,10 +439,10 @@ func dash() -> void:
 		modulate_tween.kill()
 		
 	if Input.is_action_pressed("Move_Up") and Can_Up_Blast:
-		if fire < DASH_FIRE_COST: return
-		fire -= DASH_FIRE_COST
-		dash_timeout.start(UP_BLAST_TIME)
-		dash_timeout.wait_time = DASH_COOLDOWN
+		if fire < dash_fire_cost: return
+		fire -= dash_fire_cost
+		dash_timeout.start(up_blast_time)
+		dash_timeout.wait_time = dash_cooldown
 		current_movement_state = MovementState.NORMAL
 		velocity.y = -dash_velocity * UNIT_SCALE
 		can_dash = false
@@ -447,13 +450,13 @@ func dash() -> void:
 		play_animation_once("Jump")
 		set_smoke_emitting(true)
 		
-		grant_invincibility(UP_BLAST_INVINCIBILITY)
+		grant_invincibility(up_blast_invincibility)
 		
-		sprite.self_modulate = DASH_TINT
-		get_tree().create_timer(UP_BLAST_TINT_HOLD).timeout.connect(func():
+		sprite.self_modulate = dash_tint
+		get_tree().create_timer(up_blast_tint_hold).timeout.connect(func():
 			if modulate_tween and modulate_tween.is_running(): modulate_tween.kill()
 			modulate_tween = create_tween()
-			modulate_tween.tween_property(sprite, "self_modulate", Color.WHITE, UP_BLAST_TINT_FADE)
+			modulate_tween.tween_property(sprite, "self_modulate", Color.WHITE, up_blast_tint_fade)
 		)
 		return
 		
@@ -467,9 +470,9 @@ func dash() -> void:
 		override_animations = true
 		play_animation_once("Dash")
 		
-		grant_invincibility(GROUND_DASH_INVINCIBILITY)
+		grant_invincibility(ground_dash_invincibility)
 		
-		sprite.self_modulate = DASH_TINT
+		sprite.self_modulate = dash_tint
 		
 		await get_tree().create_timer(dash_time).timeout
 		
@@ -478,7 +481,7 @@ func dash() -> void:
 			velocity = Vector2.ZERO 
 			set_smoke_emitting(false)
 			
-			await get_tree().create_timer(GROUND_DASH_RECOVERY_DELAY).timeout
+			await get_tree().create_timer(ground_dash_recovery_delay).timeout
 			
 			if is_on_floor():
 				override_animations = false
@@ -487,29 +490,29 @@ func dash() -> void:
 				
 			if modulate_tween and modulate_tween.is_running(): modulate_tween.kill()
 			modulate_tween = create_tween()
-			modulate_tween.tween_property(sprite, "self_modulate", Color.WHITE, GROUND_DASH_TINT_FADE)
+			modulate_tween.tween_property(sprite, "self_modulate", Color.WHITE, ground_dash_tint_fade)
 		else:
-			dash_timeout.start(GROUND_DASH_AIR_COOLDOWN)
+			dash_timeout.start(ground_dash_air_cooldown)
 			is_ground_dashing = false
 			is_air_dash_ragdoll = true 
 			
 			if modulate_tween and modulate_tween.is_running(): modulate_tween.kill()
 			modulate_tween = create_tween()
-			modulate_tween.tween_property(sprite, "self_modulate", Color.WHITE, GROUND_DASH_AIR_TINT_FADE)
+			modulate_tween.tween_property(sprite, "self_modulate", Color.WHITE, ground_dash_air_tint_fade)
 	elif Can_Air_Dash == true and !extended_floor_check.is_colliding():
 		is_ground_dashing = false
 		if current_movement_state == MovementState.ON_LEDGE:
 			exit_ledge()
 			sprite.flip_h = not sprite.flip_h
-		if fire < DASH_FIRE_COST: return
-		fire -= DASH_FIRE_COST
+		if fire < dash_fire_cost: return
+		fire -= dash_fire_cost
 		ground_dash_direction = -1.0 if sprite.flip_h else 1.0
 		launch_vector = Vector2(ground_dash_direction * dash_velocity, 0.0)
 		apply_physics_impulse(launch_vector, true)
 		
-		grant_invincibility(AIR_DASH_INVINCIBILITY)
+		grant_invincibility(air_dash_invincibility)
 		
-		sprite.self_modulate = DASH_TINT
+		sprite.self_modulate = dash_tint
 		
 		if modulate_tween and modulate_tween.is_running(): modulate_tween.kill()
 		modulate_tween = create_tween()
@@ -541,7 +544,7 @@ func exit_ledge() -> void:
 # --- Camera Shake System ---
 func apply_shake(amount: float) -> void:
 	if amount > shake_trauma:
-		shake_trauma = clamp(shake_trauma + amount, 0.0, SHAKE_MAX_TRAUMA)
+		shake_trauma = clamp(shake_trauma + amount, 0.0, shake_max_trauma)
 
 func _process_camera_shake(delta: float) -> void:
 	if not is_instance_valid(camera) or shake_trauma <= 0.0:
@@ -553,7 +556,7 @@ func _process_camera_shake(delta: float) -> void:
 	shake_trauma = max(shake_trauma - shake_decay * delta, 0.0)
 	var amount := shake_trauma * shake_trauma
 	
-	var time := Time.get_ticks_msec() * SHAKE_TIME_SCALE
+	var time := Time.get_ticks_msec() * shake_time_scale
 	var offset_x := max_offset.x * amount  * noise.get_noise_2d(time, 0.0)
 	var offset_y := max_offset.y * amount  * noise.get_noise_2d(0.0, time)
 	
@@ -570,11 +573,11 @@ func request_damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multi
 func damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multiplier: float = 1.0) -> void:
 	if current_state == State.DEAD or is_invincible and !invincibility_timer.is_stopped():
 		return
-	grant_invincibility(DAMAGE_INVINCIBILITY)
+	grant_invincibility(damage_invincibility)
 
 	Health = max(Health - value, 0.0)
 	_play_hit_flash.rpc()
-	apply_shake(SHAKE_HIT)
+	apply_shake(shake_hit)
 	
 	set_physics_process(false)
 	override_animations = true
@@ -582,7 +585,7 @@ func damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multiplier: f
 	_spawn_hit_effect.rpc(origin)
 	sprite.play("Hurt")
 	set_process_input(false)
-	await get_tree().create_timer(HURT_STUN_TIME).timeout
+	await get_tree().create_timer(hurt_stun_time).timeout
 	set_physics_process(true)
 	set_process_input(true)
 
@@ -590,17 +593,17 @@ func damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multiplier: f
 		_sync_die.rpc(origin)
 	elif origin != Vector2.ZERO:
 		var dir_x := 1.0 if origin.x < global_position.x else -1.0
-		velocity = Vector2(KNOCKBACK_X * ((dir_x * UNIT_SCALE) * velocity_multiplier), (KNOCKBACK_Y * UNIT_SCALE) * velocity_multiplier)
-		await get_tree().create_timer(KNOCKBACK_RECOVERY_TIME).timeout
+		velocity = Vector2(knockback_x * ((dir_x * UNIT_SCALE) * velocity_multiplier), (knockback_y * UNIT_SCALE) * velocity_multiplier)
+		await get_tree().create_timer(knockback_recovery_time).timeout
 		override_animations = false
 
 @rpc("authority", "call_local", "reliable")
 func _spawn_hit_effect(origin: Vector2) -> void:
 	var effect : Node = PUNCH_EFFECT.instantiate()
 	effect.global_position = global_position
-	effect.global_position.x += randi_range(-HIT_EFFECT_JITTER, HIT_EFFECT_JITTER)
-	effect.global_position.y += randi_range(-HIT_EFFECT_JITTER, HIT_EFFECT_JITTER)
-	effect.scale *= randi_range(HIT_EFFECT_SCALE_MIN, HIT_EFFECT_SCALE_MAX)
+	effect.global_position.x += randi_range(-hit_effect_jitter, hit_effect_jitter)
+	effect.global_position.y += randi_range(-hit_effect_jitter, hit_effect_jitter)
+	effect.scale *= randi_range(hit_effect_scale_min, hit_effect_scale_max)
 	effect.look_at(origin)
 	
 	get_tree().root.add_child(effect)
@@ -613,9 +616,9 @@ func grant_invincibility(time: float = 1.0) -> void:
 		invincibility_timer.start(duration)
 		
 	if sprite:
-		var flash_tween := create_tween().set_loops(max(1, int(duration / FLASH_INTERVAL)))
-		flash_tween.tween_property(sprite, "modulate:a", FLASH_MIN_ALPHA, FLASH_STEP_TIME)
-		flash_tween.tween_property(sprite, "modulate:a", 1.0, FLASH_STEP_TIME)
+		var flash_tween := create_tween().set_loops(max(1, int(duration / flash_interval)))
+		flash_tween.tween_property(sprite, "modulate:a", flash_min_alpha, flash_step_time)
+		flash_tween.tween_property(sprite, "modulate:a", 1.0, flash_step_time)
 
 func _on_invincibility_timer_timeout() -> void:
 	is_invincible = false
@@ -640,8 +643,8 @@ func die(origin: Vector2 = Vector2.ZERO) -> void:
 	override_animations = true
 	set_smoke_emitting(false)
 
-	set_collision_layer_value(DEATH_COLLISION_LAYER, false)
-	set_collision_mask_value(DEATH_COLLISION_LAYER, false)
+	set_collision_layer_value(death_collision_layer, false)
+	set_collision_mask_value(death_collision_layer, false)
 
 	var dir_x: float = 0.0
 	if origin != Vector2.ZERO:
@@ -656,7 +659,7 @@ func die(origin: Vector2 = Vector2.ZERO) -> void:
 		sprite.play(death_anim)
 
 	var fade_tween := create_tween()
-	fade_tween.tween_property(self, "modulate:a", 0.0, death_despawn_time).set_delay(death_despawn_time * DEATH_FADE_DELAY_FACTOR)
+	fade_tween.tween_property(self, "modulate:a", 0.0, death_despawn_time).set_delay(death_despawn_time * death_fade_delay_factor)
 	fade_tween.tween_callback(queue_free)
 
 func _process_death_movement(delta: float) -> void:
@@ -672,12 +675,12 @@ func spawn_explosion(is_finisher: bool) -> void:
 	var explosion := EXPLOSION.instantiate() as Node2D
 	explosion.global_position = global_position
 	get_tree().root.add_child(explosion)
-	apply_shake(SHAKE_EXPLOSION)
+	apply_shake(shake_explosion)
 	explosion.get_child(2).area_entered.connect(func(area: Area2D) -> void:
 		var parent = area.get_parent()
 		if parent.is_in_group("Entity") and not parent.is_in_group("Player"):
 			if is_finisher:
-				heal(FINISHER_HEAL)
+				heal(finisher_heal)
 		)
 
 func set_smoke_emitting(emitting: bool) -> void:
@@ -697,7 +700,7 @@ func update_camera_extent(dir: float) -> void:
 	
 	extend_tween = create_tween()
 	extend_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	extend_tween.tween_property(camera_pivot, "position:x", target_x, CAMERA_EXTEND_TWEEN_TIME)
+	extend_tween.tween_property(camera_pivot, "position:x", target_x, camera_extend_tween_time)
 	if velocity.y > 0.0:
 		pass
 	else:
@@ -725,23 +728,23 @@ func punch() -> void:
 	is_punching = true
 	
 	punch_timeout.start()
-	combo_count = (combo_count % COMBO_MAX) + 1 if has_hit else 1
+	combo_count = (combo_count % combo_max) + 1 if has_hit else 1
 	
-	if combo_count == COMBO_MAX and Can_Flame_Burst == true and has_hit == true:
+	if combo_count == combo_max and Can_Flame_Burst == true and has_hit == true:
 		_execute_finisher()
 		override_animations = true
 		play_animation_once("Punch4")
 		combo_count = 0
 	else:
-		punch_hitbox_activate(PUNCH_HITBOX_LINGER)
-		var current_step: int = 1 if combo_count == COMBO_MAX else combo_count
+		punch_hitbox_activate(punch_hitbox_linger)
+		var current_step: int = 1 if combo_count == combo_max else combo_count
 		override_animations = true
 		
 		if is_on_floor():
 			if old_speed < 0.0:
 				old_speed = speed_multiplier
 				speed_multiplier = 0.0
-			if current_step != COMBO_MAX:
+			if current_step != combo_max:
 				var forward_direction: float = -1.0 if sprite.flip_h else 1.0
 				velocity.x = forward_direction * (punch_dash_speed * UNIT_SCALE)
 		
@@ -751,7 +754,7 @@ func punch() -> void:
 			2: sprite.play("Punch2")
 			3: sprite.play("Punch3")
 	
-	await get_tree().create_timer(PUNCH_LOCK_FACTOR * get_physics_process_delta_time()).timeout
+	await get_tree().create_timer(punch_lock_factor * get_physics_process_delta_time()).timeout
 	is_punching = false
 
 func check_punch_buffer() -> void:
@@ -780,7 +783,7 @@ func punch_hitbox_activate(linger: float) -> void:
 	hitbox.queue_free()
 
 func _execute_finisher() -> void:
-	var timer = get_tree().create_timer(FINISHER_DELAY)
+	var timer = get_tree().create_timer(finisher_delay)
 	await timer.timeout
 	if not is_inside_tree(): 
 		return
@@ -790,14 +793,14 @@ func _execute_finisher() -> void:
 	sprite.flip_h = not sprite.flip_h
 	spawn_explosion.rpc(true)
 	var dir_x : float = -1.0 if velocity.x > 0.0 else 1.0
-	velocity.x = (FINISHER_KNOCKBACK_SPEED * UNIT_SCALE) * dir_x
-	velocity.y = FINISHER_DOWN_SPEED * UNIT_SCALE
+	velocity.x = (finisher_knockback_speed * UNIT_SCALE) * dir_x
+	velocity.y = finisher_down_speed * UNIT_SCALE
 	
-	punch_cooldown.start(FINISHER_LOCKOUT)
-	punch_timeout.start(FINISHER_LOCKOUT)
+	punch_cooldown.start(finisher_lockout)
+	punch_timeout.start(finisher_lockout)
 
 func _on_punch_cooldown_timeout() -> void:
-	punch_cooldown.wait_time = PUNCH_COOLDOWN_NEXT
+	punch_cooldown.wait_time = punch_cooldown_next
 	
 	can_punch = true
 	override_animations = false
@@ -810,7 +813,7 @@ func _on_punch_cooldown_timeout() -> void:
 	check_punch_buffer()
 
 func _on_punch_timeout_timeout() -> void:
-	punch_timeout.wait_time = PUNCH_TIMEOUT_NEXT
+	punch_timeout.wait_time = punch_timeout_next
 	combo_count = 0
 	has_hit = false
 
@@ -818,25 +821,25 @@ func _on_punch_hitbox_area_entered(area: Area2D) -> void:
 	var parent_node = area.get_parent()
 	if parent_node.is_in_group("Entity") and parent_node.is_in_group("Enemy"):
 		if parent_node.has_method("damage"):
-			parent_node.damage(PUNCH_DAMAGE, global_position, 1, self)
-			apply_shake(SHAKE_PUNCH_HIT)
+			parent_node.damage(punch_damage, global_position, 1, self)
+			apply_shake(shake_punch_hit)
 			var direction = -1.0 if sprite.flip_h else 1.0
-			velocity.y = PUNCH_HIT_RECOIL_Y * UNIT_SCALE
-			velocity.x = (PUNCH_HIT_PUSH_X * UNIT_SCALE) * direction
-			fire = clamp(fire + PUNCH_HIT_FIRE_GAIN, 0.0, max_fire)
+			velocity.y = punch_hit_recoil_y * UNIT_SCALE
+			velocity.x = (punch_hit_push_x * UNIT_SCALE) * direction
+			fire = clamp(fire + punch_hit_fire_gain, 0.0, max_fire)
 			has_hit = true
 			
 func change_camera_boundaries(left: int, right: int, top: int, bottom: int) -> void:
 	if not is_instance_valid(camera) or not is_multiplayer_authority():
 		return
 	
-	camera.position_smoothing_speed = smoothness_speed * CAMERA_BOUNDARY_SMOOTHING_FACTOR
+	camera.position_smoothing_speed = smoothness_speed * camera_boundary_smoothing_factor
 	
 	camera.limit_left = left
 	camera.limit_right = right
 	camera.limit_top = top
 	camera.limit_bottom = bottom
 	
-	await  get_tree().create_timer(CAMERA_BOUNDARY_TRANSITION_TIME).timeout
+	await  get_tree().create_timer(camera_boundary_transition_time).timeout
 	
 	camera.position_smoothing_speed = smoothness_speed
