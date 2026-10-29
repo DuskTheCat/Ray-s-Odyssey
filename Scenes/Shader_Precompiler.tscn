@@ -47,6 +47,7 @@ script = ExtResource("1_6cgen")
 scenes_to_precompile = Array[PackedScene]([ExtResource("2_sc43f"), ExtResource("3_8bpn7"), ExtResource("4_he14j"), ExtResource("5_sc43f")])
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=104791988]
+visible = false
 z_index = 100
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,3 +73,12 @@ render_target_update_mode = 4
 
 [node name="Hit_Flash_Anim" type="AnimationPlayer" parent="." unique_id=299877172]
 libraries/ = SubResource("AnimationLibrary_6cgen")
+
+[node name="ColorRect2" type="ColorRect" parent="." unique_id=289046227]
+z_index = -5
+offset_left = -4123.0
+offset_top = -2783.0
+offset_right = 4812.0
+offset_bottom = 2250.0
+color = Color(0.3019608, 0.3019608, 0.3019608, 1)
+metadata/_edit_use_anchors_ = true

@@ -24,6 +24,7 @@ PacketHandshake="*uid://tt3j25a05n7c"
 Settings="*uid://bfpuw5v2gutht"
 LoadingSystem="*uid://7r27emuv3vu0"
 ControllerIcons="*uid://bol6xnunhr2ne"
+SaveManager="*uid://ckubwtvdwmoig"
 
 [debug]
 

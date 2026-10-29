@@ -365,12 +365,12 @@ collision_layer = 0
 position = Vector2(0, -82.5)
 shape = SubResource("RectangleShape2D_eopg3")
 
-[node name="InteractArea" type="Area2D" parent="." unique_id=1164556501]
+[node name="SaveArea" type="Area2D" parent="." unique_id=1164556501]
 z_index = -1
 collision_layer = 65535
 collision_mask = 65535
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=1993623359]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SaveArea" unique_id=1993623359]
 position = Vector2(0, -17)
 shape = SubResource("RectangleShape2D_nb6ps")
 
@@ -390,6 +390,6 @@ offset_bottom = -66.0
 
 [connection signal="body_entered" from="LightArea" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_exited" from="LightArea" to="." method="_on_area_2d_body_exited"]
-[connection signal="area_entered" from="InteractArea" to="." method="_on_interact_area_area_entered"]
-[connection signal="body_entered" from="InteractArea" to="." method="_on_interact_area_body_entered"]
-[connection signal="body_exited" from="InteractArea" to="." method="_on_interact_area_body_exited"]
+[connection signal="area_entered" from="SaveArea" to="." method="_on_interact_area_area_entered"]
+[connection signal="body_entered" from="SaveArea" to="." method="_on_interact_area_body_entered"]
+[connection signal="body_exited" from="SaveArea" to="." method="_on_interact_area_body_exited"]

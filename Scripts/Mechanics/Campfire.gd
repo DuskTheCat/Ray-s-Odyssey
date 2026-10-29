@@ -7,14 +7,18 @@ extends Node2D
 
 func _ready() -> void:
 	# Clear old editor-spawned particles instantly on spawn using built-in methods
-	gpu_particles_2d.emitting = false
-	gpu_particles_2d.restart()
+	var duplicate = gpu_particles_2d.duplicate()
+	duplicate.global_position = gpu_particles_2d.global_position
+	get_tree().root.add_child(duplicate)
+	duplicate.restart()
 	
 	animation_player.active = false
 	point_light_2d.energy = 2.0
 	
 	# Wait one frame safely using the scene tree's process frame signal
 	await get_tree().process_frame
+	
+	duplicate.queue_free()
 	
 	point_light_2d.energy = 0.0
 	animation_player.active = true
@@ -43,7 +47,6 @@ func _on_interact_area_body_exited(body: Node2D) -> void:
 func _on_interact_area_area_entered(area: Area2D) -> void:
 	# Check if the interaction source is valid and particles aren't already running
 	if area.is_in_group("Interact"):
-		print("Interact")
 		(func() -> void:
 			var duplicate : GPUParticles2D = gpu_particles_2d.duplicate()
 			duplicate.global_position = gpu_particles_2d.global_position

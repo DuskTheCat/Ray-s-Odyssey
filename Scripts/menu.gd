@@ -1,6 +1,6 @@
 extends Control
 
-const TEST_LEVEL = "res://Scenes/Tests/TestLevel.tscn"
+const LEVEL_NAME = "res://Scenes/Tests/Test-BottomLeft.tscn"
 const TEST_LEVEL_COOP = "res://Scenes/Tests/TestLevelCoop.tscn"
 const TEST_SETTINGS = "res://Scenes/Tests/TestSettings.tscn"
 
@@ -20,7 +20,9 @@ func _ready() -> void:
 
 
 func _on_button_pressed() -> void:
-	_change_scene(TEST_LEVEL)
+	var dict: Dictionary = SaveManager.load_game(1)
+	var Room: String = dict["Room"]
+	_change_scene(Room)
 
 func _on_button_2_pressed() -> void:
 	_change_scene(TEST_LEVEL_COOP)

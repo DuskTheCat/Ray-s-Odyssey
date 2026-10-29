@@ -13,6 +13,7 @@ const MAIN_SCENE : String = "res://Scenes/Menus/menu.tscn"
 
 func _ready() -> void:
 	start_precompilation()
+	enable_all_lights(get_tree().root)
 
 func start_precompilation() -> void:
 	# 1. Instantiate all 2D PackedScenes inside the viewport
@@ -30,7 +31,7 @@ func start_precompilation() -> void:
 			container_2d.add_child(rect)
 
 	# 3. Wait 2 frames for Godot's RenderingServer to build the CanvasItem shaders
-	await get_tree().create_timer(0.2 * get_process_delta_time())
+	await get_tree().create_timer(1 * get_process_delta_time())
 	await RenderingServer.frame_post_draw
 
 	# 4. Clean up temporary nodes
@@ -41,3 +42,15 @@ func start_precompilation() -> void:
 	precompile_finished.emit()
 	
 	LoadingSystem.load_scene(MAIN_SCENE)
+	
+func enable_all_lights(node: Node) -> void:
+	# Check for 2D lights (DirectionalLight2D, OmniLight2D, SpotLight2D)
+	if node is Light2D:
+		node.visible = true
+	# Check for 2D lights (PointLight2D, DirectionalLight2D)
+	elif node is Light2D:
+		node.enabled = true # Or node.visible = true depending on Godot version
+
+	# Recursively search all child nodes
+	for child in node.get_children():
+		enable_all_lights(child)

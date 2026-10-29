@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://qxj5qv5p65qs"]
+
+[ext_resource type="Script" uid="uid://ddyhhlp2amt05" path="res://Scripts/Rooms/Room_Switch.gd" id="1_igqnp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xhsim"]
+size = Vector2(260, 260)
+
+[node name="Room Entrance" type="Area2D" unique_id=233959925]
+script = ExtResource("1_igqnp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=242637586]
+shape = SubResource("RectangleShape2D_xhsim")
