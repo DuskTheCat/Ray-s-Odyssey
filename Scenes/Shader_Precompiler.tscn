@@ -47,7 +47,6 @@ script = ExtResource("1_6cgen")
 scenes_to_precompile = Array[PackedScene]([ExtResource("2_sc43f"), ExtResource("3_8bpn7"), ExtResource("4_he14j"), ExtResource("5_sc43f")])
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=104791988]
-visible = false
 z_index = 100
 anchors_preset = 15
 anchor_right = 1.0

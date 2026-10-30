@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://vs8pvqdwxqh0" path="res://Scripts/menu.gd" id="1_bc13x"]
 [ext_resource type="PackedScene" uid="uid://b3pe5amnue0nd" path="res://Scenes/Reusable/Fade.tscn" id="2_b04sx"]
+[ext_resource type="Texture2D" uid="uid://bqp3o5trt7unt" path="res://Textures/Lock.png" id="2_wudlr"]
 [ext_resource type="Script" uid="uid://cghfvo0eyirhc" path="res://Scripts/UI/Only_Gamepad.gd" id="3_hg7h7"]
 [ext_resource type="Texture2D" uid="uid://840bfsvemh70" path="res://Textures/Controller/UI_ACCEPT.tres" id="3_v64r2"]
 [ext_resource type="Texture2D" uid="uid://cuhrjdobvlabu" path="res://Textures/Controller/UI_CANCEL.tres" id="4_hg7h7"]
@@ -48,9 +49,37 @@ theme_override_font_sizes/font_size = 143
 text = "PLAY"
 
 [node name="Button2" type="Button" parent="VBoxContainer" unique_id=1197497765]
+self_modulate = Color(1, 1, 1, 0.29500002)
 layout_mode = 2
+mouse_filter = 2
 theme_override_font_sizes/font_size = 143
 text = "PLAY_COOP"
+
+[node name="Lock" type="Sprite2D" parent="VBoxContainer/Button2" unique_id=311459396]
+position = Vector2(467.33325, 111.5)
+scale = Vector2(0.3838574, 0.3838574)
+texture = ExtResource("2_wudlr")
+
+[node name="Label" type="Label" parent="VBoxContainer/Button2" unique_id=784007732]
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.22530188
+anchor_top = 0.39861754
+anchor_right = 0.7696605
+anchor_bottom = 0.7498166
+offset_right = 427.39172
+offset_bottom = 63.789795
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.54435855, 0.54435855)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 519
+theme_override_font_sizes/font_size = 96
+text = "Disabled temporarily.."
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Button3" type="Button" parent="VBoxContainer" unique_id=658690385]
 layout_mode = 2

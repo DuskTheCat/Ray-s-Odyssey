@@ -308,10 +308,12 @@ scale_curve = SubResource("CurveTexture_ykv2e")
 script = ExtResource("1_nb6ps")
 
 [node name="Logs" type="Sprite2D" parent="." unique_id=7420368]
+position = Vector2(0, 7.200013)
 scale = Vector2(0.3064554, 0.3064554)
 texture = ExtResource("1_in8be")
 
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=1824512477 node_paths=PackedStringArray("visible_on_screen_notifier2d")]
+position = Vector2(0, 7.200012)
 energy = 0.0
 texture = SubResource("GradientTexture2D_xhsim")
 texture_scale = 12.35
@@ -326,7 +328,7 @@ scale = Vector2(54.73265, 54.73265)
 modulate = Color(1, 1, 1, 0)
 z_index = -1
 material = SubResource("ShaderMaterial_mgy4c")
-position = Vector2(0, -9.536743e-07)
+position = Vector2(0, 7.200011)
 scale = Vector2(151.08385, 76.951164)
 texture = ExtResource("6_0b3n3")
 
@@ -334,7 +336,7 @@ texture = ExtResource("6_0b3n3")
 modulate = Color(1, 1, 1, 0)
 z_index = -1
 material = SubResource("ShaderMaterial_nb6ps")
-position = Vector2(-2, -26)
+position = Vector2(-2, -18.799988)
 scale = Vector2(151.08385, 76.951164)
 texture = ExtResource("6_0b3n3")
 
@@ -342,7 +344,7 @@ texture = ExtResource("6_0b3n3")
 modulate = Color(1, 1, 1, 0)
 z_index = -1
 material = SubResource("ShaderMaterial_xhsim")
-position = Vector2(1, -7.9999995)
+position = Vector2(1, -0.7999873)
 scale = Vector2(109.04099, 85.92671)
 texture = ExtResource("6_0b3n3")
 
@@ -350,7 +352,7 @@ texture = ExtResource("6_0b3n3")
 modulate = Color(1, 1, 1, 0)
 z_index = -1
 material = SubResource("ShaderMaterial_wihut")
-position = Vector2(0, 7)
+position = Vector2(0, 14.200012)
 scale = Vector2(72.4846, 51.023212)
 texture = ExtResource("6_0b3n3")
 
@@ -359,6 +361,7 @@ libraries/ = SubResource("AnimationLibrary_5a0nn")
 
 [node name="LightArea" type="Area2D" parent="." unique_id=371920265]
 z_index = -1
+position = Vector2(0, 7.200012)
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LightArea" unique_id=234391258]
@@ -367,6 +370,7 @@ shape = SubResource("RectangleShape2D_eopg3")
 
 [node name="SaveArea" type="Area2D" parent="." unique_id=1164556501]
 z_index = -1
+position = Vector2(0, 7.200012)
 collision_layer = 65535
 collision_mask = 65535
 
@@ -375,6 +379,7 @@ position = Vector2(0, -17)
 shape = SubResource("RectangleShape2D_nb6ps")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=248372208]
+position = Vector2(0, 7.200012)
 emitting = false
 amount = 30
 texture = ExtResource("9_lrh5t")
@@ -385,8 +390,8 @@ explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_xhsim")
 
 [node name="InteractLabel" parent="." unique_id=748428496 instance=ExtResource("8_lrh5t")]
-offset_top = -66.0
-offset_bottom = -66.0
+offset_top = -58.799988
+offset_bottom = -58.799988
 
 [connection signal="body_entered" from="LightArea" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_exited" from="LightArea" to="." method="_on_area_2d_body_exited"]

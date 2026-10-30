@@ -568,7 +568,7 @@ func _process_ai_navigation() -> void:
 		var y_diff: float = next_path_pos.y - global_position.y
 		var x_diff: float = next_path_pos.x - global_position.x
 		
-		if WallRaycast and WallRaycast.is_colliding() and move_direction != 0.0:
+		if WallRaycast and WallRaycast.is_colliding():
 			if not _is_ceiling_above():
 				jump()
 		elif y_diff < -24.0 and abs(x_diff) < 64.0:

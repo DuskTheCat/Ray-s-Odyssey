@@ -166,6 +166,7 @@ _spawnable_scenes = PackedStringArray("uid://bbcngyxgka3pb", "uid://b22bq3qyfh1b
 spawn_path = NodePath("..")
 spawn_limit = 2
 script = ExtResource("4_bbdmo")
+room_has_checkpoint = true
 network_player = ExtResource("5_rpbxn")
 second_player = ExtResource("3_nb6uh")
 Spawn_Node = NodePath("..")
@@ -174,7 +175,7 @@ Spawn_Node = NodePath("..")
 
 [node name="NetworkUI" parent="CanvasLayer" unique_id=1570128733 instance=ExtResource("6_x4lpi")]
 
-[node name="VBoxContainer2" parent="CanvasLayer/NetworkUI" index="1" unique_id=179600590]
+[node name="VBoxContainer2" parent="CanvasLayer/NetworkUI" index="2" unique_id=179600590]
 offset_left = -70.99994
 offset_top = 136.00002
 offset_right = 201.0

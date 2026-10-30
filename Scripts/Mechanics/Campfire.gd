@@ -1,5 +1,7 @@
 extends Node2D
 
+
+@export var Room_Path: PackedScene
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var interact_label: Control = $InteractLabel
 @onready var gpu_particles_2d: GPUParticles2D = $GPUParticles2D
@@ -52,6 +54,12 @@ func _on_interact_area_area_entered(area: Area2D) -> void:
 			duplicate.global_position = gpu_particles_2d.global_position
 			duplicate.restart()
 			get_tree().root.add_child(duplicate)
+			var data : Dictionary = {
+				"Room":  get_tree().current_scene.scene_file_path,
+				"Position": global_position
+				}
+			SaveManager.save_game(data, 1)
 			await duplicate.finished
 			duplicate.queue_free()
+			
 		).call_deferred()

@@ -186,10 +186,10 @@ var is_invincible: bool = false
 var is_in_ledge: bool = false
 var has_hit: bool = false
 var is_punching: bool = false
-
 # Shake variables
 var shake_trauma: float = 0.0
 var noise := FastNoiseLite.new()
+var is_from_room: bool = false
 
 @export_group("Stats")
 @export var Health: float = 75.0:
@@ -213,11 +213,18 @@ func _enter_tree() -> void:
 	set_multiplayer_authority(name.to_int())
 
 func _ready() -> void:
+	
 	if is_multiplayer_authority():
 		camera.make_current()
 	else:
 		ui.visible = false
 		camera.enabled = false
+		
+	if is_from_room == false:
+		global_position = SaveManager.load_game(1)["Position"]
+	else:
+		global_position = RoomManager.Spawn_Position
+	print("Client Spawned at: " + str(global_position))
 		
 	fire = max_fire
 	fire_bar.value = max_fire
@@ -245,6 +252,7 @@ func _ready() -> void:
 	if OS.has_feature("mobile"):
 		Input.emulate_mouse_from_touch = false
 	fire_bar_container.set_anchors_preset(preset, false)
+
 
 func _process(delta: float) -> void:
 	_process_camera_shake(delta)
