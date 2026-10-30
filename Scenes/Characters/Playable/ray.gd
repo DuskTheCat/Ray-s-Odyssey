@@ -392,7 +392,7 @@ func _input(event: InputEvent) -> void:
 		if velocity.y < 0.0:
 			velocity.y = max(velocity.y, jump_velocity * UNIT_SCALE * jump_cut_multiplier)
 	
-	if Input.is_action_just_pressed("Move_Up") and is_on_floor():
+	if Input.is_action_just_pressed("Interact") and is_on_floor():
 		(func() -> void:
 			var interactbloc : Area2D = interact.duplicate()
 			interactbloc.global_position = global_position

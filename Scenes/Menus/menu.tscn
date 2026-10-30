@@ -56,21 +56,20 @@ theme_override_font_sizes/font_size = 143
 text = "PLAY_COOP"
 
 [node name="Lock" type="Sprite2D" parent="VBoxContainer/Button2" unique_id=311459396]
-position = Vector2(467.33325, 111.5)
+position = Vector2(106.33319, 107.5)
 scale = Vector2(0.3838574, 0.3838574)
 texture = ExtResource("2_wudlr")
 
 [node name="Label" type="Label" parent="VBoxContainer/Button2" unique_id=784007732]
 z_index = 1
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.22530188
-anchor_top = 0.39861754
-anchor_right = 0.7696605
-anchor_bottom = 0.7498166
-offset_right = 427.39172
-offset_bottom = 63.789795
-grow_horizontal = 2
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 211.33322
+offset_top = -42.0
+offset_right = 1133.3333
+offset_bottom = 98.0
 grow_vertical = 2
 scale = Vector2(0.54435855, 0.54435855)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -79,7 +78,6 @@ theme_override_font_sizes/font_size = 96
 text = "Disabled temporarily.."
 horizontal_alignment = 1
 vertical_alignment = 1
-metadata/_edit_use_anchors_ = true
 
 [node name="Button3" type="Button" parent="VBoxContainer" unique_id=658690385]
 layout_mode = 2
