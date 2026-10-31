@@ -23,12 +23,23 @@ func _ready() -> void:
 
 func _custom_spawn(data: Dictionary) -> Node:
 	var player = network_player.instantiate()
-	player.name = str(data["id"])
+	
+	var player_id = data.get("id", 1)
+	player.name = str(player_id)
 	
 	if data.has("is_from_room"):
 		player.is_from_room = data["is_from_room"]
-		
+	else:
+		player.is_from_room = RoomManager.From_A_Room
+	
+	if data.has("is_singleplayer"):
+		player.is_singleplayer = data["is_singleplayer"]
+	else:
+		player.is_singleplayer = is_singleplayer
+	
 	return player
+
+
 
 func spawn_host() -> void:
 	if multiplayer.is_server():
@@ -44,8 +55,10 @@ func spawn_single_player() -> void:
 	
 	var player = _custom_spawn({
 		"id": 1,
-		"is_from_room": is_from_room
+		"is_from_room": is_from_room,
+		"is_singleplayer": is_singleplayer
 	})
+	print("Singleplayer is " + str(is_singleplayer))
 	parent_node.add_child(player)
 
 func spawn_player(id: int) -> void:

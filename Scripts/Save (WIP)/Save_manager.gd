@@ -6,6 +6,9 @@ const save1: String = save_directory + "save1.save"
 const save2: String = save_directory + "save2.save"
 const save3: String = save_directory + "save3.save"
 
+signal saving_started
+signal game_saved
+
 const default_dictionary: Dictionary = {
 	"Room": "res://Scenes/Tests/Test-BottomLeft.tscn",
 	"Position": Vector2(81.0, 166.0)
@@ -13,6 +16,7 @@ const default_dictionary: Dictionary = {
 
 func save_game(data: Dictionary, savenumber: int) -> void:
 	var save_name: String = _get_save_path(savenumber)
+	saving_started.emit()
 	
 	var save_file: FileAccess = FileAccess.open(save_name, FileAccess.WRITE)
 	if save_file == null:
@@ -20,6 +24,7 @@ func save_game(data: Dictionary, savenumber: int) -> void:
 		return
 		
 	save_file.store_var(data)
+	game_saved.emit()
 	save_file.close()
 	
 func load_game(savenumber: int) -> Dictionary:

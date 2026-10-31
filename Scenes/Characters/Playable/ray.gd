@@ -48,6 +48,7 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @export var Can_Flame_Burst: bool = false
 @export var Can_Air_Dash: bool = false
 @export var Can_Up_Blast: bool = false
+@export var Can_Use_Sun_Blades: bool = false
 
 @export_group("Death Impulse")
 @export var death_launch_force: Vector2 = Vector2(4.0, -7.0)
@@ -165,7 +166,8 @@ enum MovementState { NORMAL, ON_LEDGE, PHYSICS_OBJECT }
 @onready var punch_buffer: Timer = $PunchBuffer
 @onready var extended_floor_check: RayCast2D = $ExtendedFloorCheck
 @onready var interact: Area2D = $Interact
-
+@onready var name_tag: NameTag = $NameTag
+@onready var line_of_sight: RayCast2D = $LineOfSight
 
 # --- Private / Runtime Variables ---
 var current_speed: float = 1.4
@@ -181,15 +183,21 @@ var camera_boundary_tween: Tween
 var last_direction: float = 0.0
 var combo_count: int = 0
 var can_punch: bool = true
-var old_speed: float = -1.0
+var old_speed: float
 var is_invincible: bool = false
 var is_in_ledge: bool = false
 var has_hit: bool = false
 var is_punching: bool = false
+var is_damaged: bool = false
 # Shake variables
 var shake_trauma: float = 0.0
 var noise := FastNoiseLite.new()
 var is_from_room: bool = false
+var is_singleplayer: bool = false
+
+# --- Signals ---
+signal landed
+signal falling
 
 @export_group("Stats")
 @export var Health: float = 75.0:
@@ -224,11 +232,21 @@ func _ready() -> void:
 		global_position = SaveManager.load_game(1)["Position"]
 	else:
 		global_position = RoomManager.Spawn_Position
+	
 	print("Client Spawned at: " + str(global_position))
-		
+	
+	if is_singleplayer == true:
+		print("Is singleplayer")
+		name_tag.hide()
+	else:
+		print("Is multiplayer")
+	
 	fire = max_fire
 	fire_bar.value = max_fire
 	fire_bar.max_value = max_fire
+	old_speed = speed_multiplier
+	
+	SaveManager.game_saved.connect(saved_game)
 	
 	Health = Max_Health
 	if is_instance_valid(health_bar):
@@ -256,6 +274,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_process_camera_shake(delta)
+	var mouse_pos = get_local_mouse_position()
+	line_of_sight.target_position = mouse_pos
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
@@ -275,6 +295,7 @@ func _physics_process(delta: float) -> void:
 		set_smoke_emitting(is_upward_dashing)
 		
 		var was_on_floor : bool = is_on_floor()
+		var was_falling : bool = velocity.y < 12.0
 		
 		if not is_on_floor():
 			velocity += (get_gravity() * gravity_multiplier) * delta
@@ -311,6 +332,11 @@ func _physics_process(delta: float) -> void:
 		
 		if was_on_floor and not is_on_floor() and velocity.y >= 0:
 			coyote_time.start()
+		if not was_on_floor and is_on_floor():
+			landed.emit()
+		if not was_falling and velocity.y > 0.0:
+			falling.emit()
+		
 		
 	elif current_movement_state == MovementState.ON_LEDGE:
 		velocity = Vector2.ZERO
@@ -374,6 +400,17 @@ func _input(event: InputEvent) -> void:
 	if current_movement_state == MovementState.PHYSICS_OBJECT and not is_ground_dashing:
 		return
 		
+	if Input.is_action_just_pressed("Blade_Throw") and Can_Use_Sun_Blades:
+		if line_of_sight.is_colliding():
+			var area = line_of_sight.get_collider()
+			var pos : Vector2 = line_of_sight.get_collision_point()
+			if area is Area2D and area.is_in_group("BladeAnchorArea"):
+				print("Blade Throw")
+				velocity = (pos - global_position).normalized() * (17.5 * UNIT_SCALE)
+				speed_multiplier = 0
+				await falling
+				speed_multiplier = old_speed
+		
 	if event.is_action_pressed("Sprint"):
 		if event is InputEventAction and event.action == "Sprint":
 			sprinting = event.pressed
@@ -404,10 +441,12 @@ func _input(event: InputEvent) -> void:
 			interactbloc.queue_free()
 		).call_deferred()
 	
+	
+	
 # --- Animation Handling ---
 func update_animation() -> void:
 	if not is_multiplayer_authority() or current_state == State.DEAD: return
-	if override_animations:
+	if override_animations or is_damaged:
 		return
 		
 	if current_movement_state == MovementState.NORMAL:
@@ -589,11 +628,14 @@ func damage(value: float, origin: Vector2 = Vector2.ZERO, velocity_multiplier: f
 	
 	set_physics_process(false)
 	override_animations = true
+	is_damaged = true
+	is_in_ledge = false
 	sprite.stop()
 	_spawn_hit_effect.rpc(origin)
 	sprite.play("Hurt")
 	set_process_input(false)
 	await get_tree().create_timer(hurt_stun_time).timeout
+	is_damaged = false
 	set_physics_process(true)
 	set_process_input(true)
 
@@ -725,6 +767,12 @@ func _on_ledge_detecor_area_area_entered(area: Area2D) -> void:
 		if (not sprite.flip_h and diff > 0) or (sprite.flip_h and diff < 0):
 			grab_ledge()
 
+func saved_game() -> void:
+	var tween: Tween = create_tween()
+	tween.tween_property(self, "fire", max_fire, 45 * get_process_delta_time())
+	tween.set_parallel(true)
+	tween.tween_property(self, "Health", Max_Health, 45 * get_process_delta_time())
+
 # --- Punch Implementation ---
 func punch() -> void:
 	if not can_punch or current_state != State.NORMAL or is_in_ledge:
@@ -741,7 +789,8 @@ func punch() -> void:
 	if combo_count == combo_max and Can_Flame_Burst == true and has_hit == true:
 		_execute_finisher()
 		override_animations = true
-		play_animation_once("Punch4")
+		if !is_damaged:
+			play_animation_once("Punch4")
 		combo_count = 0
 	else:
 		punch_hitbox_activate(punch_hitbox_linger)
@@ -749,18 +798,17 @@ func punch() -> void:
 		override_animations = true
 		
 		if is_on_floor():
-			if old_speed < 0.0:
-				old_speed = speed_multiplier
-				speed_multiplier = 0.0
+			speed_multiplier = 0.0
 			if current_step != combo_max:
 				var forward_direction: float = -1.0 if sprite.flip_h else 1.0
 				velocity.x = forward_direction * (punch_dash_speed * UNIT_SCALE)
 		
 		sprite.stop()
-		match current_step:
-			1: sprite.play("Punch1")
-			2: sprite.play("Punch2")
-			3: sprite.play("Punch3")
+		if !is_damaged:
+			match current_step:
+				1: sprite.play("Punch1")
+				2: sprite.play("Punch2")
+				3: sprite.play("Punch3")
 	
 	await get_tree().create_timer(punch_lock_factor * get_physics_process_delta_time()).timeout
 	is_punching = false
@@ -813,9 +861,8 @@ func _on_punch_cooldown_timeout() -> void:
 	can_punch = true
 	override_animations = false
 	
-	if old_speed >= 0.0:
-		speed_multiplier = old_speed
-		old_speed = -1.0
+	
+	speed_multiplier = old_speed
 		
 	# Trigger queued punch if player pressed punch during cooldown
 	check_punch_buffer()

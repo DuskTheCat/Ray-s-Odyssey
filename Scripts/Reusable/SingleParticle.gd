@@ -8,6 +8,7 @@ extends Node2D
 @export var sprite : AnimatedSprite2D
 
 @export_group("System")
+@export var is_used_on_pooling: bool = false
 @export var auto_play_sprite : bool = true
 @export var auto_play_animation : String
 @export var delete_on_finish : bool = true
@@ -38,7 +39,8 @@ func start() -> void:
 	
 
 func on_sprite_end() -> void:
-	queue_free()
+	if !is_used_on_pooling:
+		queue_free()
 	
 func sprite_play() -> void:
 	sprite.play(sprite.animation)

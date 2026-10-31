@@ -71,6 +71,7 @@ var was_on_floor_last_frame: bool = true
 var damagetween: Tween
 var oldmodulate = modulate
 var old_speed
+var wall_raycast_was_colliding: bool = false
 
 # --- Turning State Variables ---
 var current_facing_direction: float = 1.0
@@ -111,11 +112,16 @@ var link_target_velocity_x: float = 0.0
 @onready var hurt_box: Area2D = $HurtBox
 @onready var hit_flash_anim: AnimationPlayer = $Hit_Flash_Anim
 
+var default_jump_velocity: float
+var default_speed_multiplier
+var default_walk_speed: float
+var default_run_speed: float
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(1)
 
 func _ready() -> void:
+	default_jump_velocity = jump_velocity
 	old_speed = speed_multiplier
 	self_modulate = Color.TRANSPARENT
 	
@@ -174,6 +180,10 @@ func _apply_initial_facing_direction() -> void:
 		sight.scale.x = dir_sign
 
 func _update_facing_orientation(dir_x: float) -> void:
+	# Prevent changing facing direction while in the air
+	if not is_on_floor():
+		return
+	
 	# Lock orientation completely if attacking or winding up
 	if current_state == State.ATTACK or is_punching or !punch_windup_time.is_stopped():
 		return
@@ -248,10 +258,12 @@ func _on_node_added(node: Node) -> void:
 func _physics_process(delta: float) -> void:
 	current_facing_direction = target_facing_direction
 	_force_apply_facing(current_facing_direction)
+	
+	var was_on_floor : bool = is_on_floor()
 
 	if not multiplayer.is_server():
 		update_animation()
-		if move_direction != 0.0:
+		if is_on_floor() and move_direction != 0.0:
 			_update_facing_orientation(move_direction)
 		return
 		
@@ -268,6 +280,7 @@ func _physics_process(delta: float) -> void:
 	_process_alert_delay(delta)
 	_check_punch_range()
 
+
 	match current_movement_state:
 		MovementState.NORMAL:
 			_process_normal_movement(delta)
@@ -283,7 +296,6 @@ func _physics_process(delta: float) -> void:
 		if collider is CharacterBody2D:
 			var push_dir = -collision.get_normal()
 			collider.velocity += push_dir * (push_force * UNIT_SCALE)
-
 
 # --- Perception, Vision & Alert System ---
 func _on_sight_body_entered(body: Node2D) -> void:
@@ -418,16 +430,13 @@ func punch() -> void:
 	override_animations = true
 	punch_windup_time.start()
 	
-	# Wait safely for the windup to finish without blocking the engine thread
 	await punch_windup_time.timeout
 	
-	# Check if we got stunned or died during the windup period
 	if not stun_time.is_stopped() or current_state == State.STUNNED or current_state == State.DEAD:
 		override_animations = false
 		_reset_attack_state()
 		return
 		
-	# Proceed with the punch if uninterrupted
 	speed_multiplier = old_speed
 	play_animation_once("Punch1")
 	punch_hitbox_activate(0.15)
@@ -443,6 +452,8 @@ func punch() -> void:
 func _reset_attack_state() -> void:
 	can_punch = true
 	is_punching = false
+	jump_velocity = default_jump_velocity
+	speed_multiplier = old_speed
 	if current_state == State.ATTACK:
 		override_animations = false
 		current_state = State.CHASE if is_instance_valid(Target) else State.IDLE
@@ -483,17 +494,29 @@ func _trigger_camera_shake(target_node: Node) -> void:
 func _process_normal_movement(delta: float) -> void:
 	set_smoke_emitting(false)
 	
+	if WallRaycast:
+		WallRaycast.force_raycast_update()
+	var is_wall_colliding: bool = WallRaycast and WallRaycast.is_colliding()
+	
 	if current_state == State.ATTACK or current_state == State.STUNNED:
 		move_direction = 0.0
+	elif not is_on_floor():
+		# If the wall raycast was colliding when grounded/jumping, but stopped colliding while airborne, 
+		# forcefully push forward in the direction they are facing to clear the obstacle.
+		if wall_raycast_was_colliding and not is_wall_colliding:
+			move_direction = current_facing_direction
 	else:
 		_process_ai_navigation()
 	
+	wall_raycast_was_colliding = is_wall_colliding
+
 	if current_state != State.ATTACK:
-		if move_direction != 0.0:
-			_update_facing_orientation(move_direction)
-		elif is_instance_valid(Target) and current_state == State.CHASE:
-			var target_dir: float = Target.global_position.x - global_position.x
-			_update_facing_orientation(target_dir)
+		if is_on_floor():
+			if move_direction != 0.0:
+				_update_facing_orientation(move_direction)
+			elif is_instance_valid(Target) and current_state == State.CHASE:
+				var target_dir: float = Target.global_position.x - global_position.x
+				_update_facing_orientation(target_dir)
 
 	if not is_on_floor():
 		velocity += (get_gravity() * gravity_multiplier) * delta
@@ -722,6 +745,8 @@ func _on_stun_timeout() -> void:
 		override_animations = false
 		is_punching = false
 		can_punch = true
+		jump_velocity = default_jump_velocity
+		speed_multiplier = old_speed
 		current_state = State.CHASE if is_instance_valid(Target) else State.IDLE
 
 @rpc("any_peer", "call_local", "reliable")

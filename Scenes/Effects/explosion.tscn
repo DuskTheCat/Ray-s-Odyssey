@@ -149,10 +149,13 @@ _data = {
 scale = Vector2(0.46608907, 0.46608907)
 sprite_frames = SubResource("SpriteFrames_f207u")
 animation = &"Explosion"
+frame = 9
+frame_progress = 1.0
 script = ExtResource("2_p8ya4")
 animation_to_play = "Explosion"
 
 [node name="Timer" type="Timer" parent="." unique_id=1497986406]
+wait_time = 2.0
 one_shot = true
 autostart = true
 script = ExtResource("3_p8ya4")

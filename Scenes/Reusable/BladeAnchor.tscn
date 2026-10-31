@@ -1,0 +1,159 @@
+[gd_scene format=3 uid="uid://dweseab86hj12"]
+
+[ext_resource type="Script" uid="uid://cy4a40fnajd21" path="res://Scripts/Mechanics/Blade_Anchor.gd" id="1_msccm"]
+[ext_resource type="Texture2D" uid="uid://diumb52xalt00" path="res://Textures/Mechanics/Lock-On.png" id="2_43wxe"]
+[ext_resource type="Texture2D" uid="uid://bo0rwi378gxrb" path="res://icon.svg" id="3_43wxe"]
+
+[sub_resource type="Animation" id="Animation_62eqo"]
+resource_name = "Lock_On"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LockOn:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.25, 1),
+"update": 0,
+"values": [Vector2(0.427, 0.427), Vector2(0.187, 0.187)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LockOn:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.25, 1),
+"update": 0,
+"values": [-6.2831855, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("LockOn:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.25, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_qqd75"]
+resource_name = "Lock_Out"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LockOn:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.32987702, 0.25),
+"update": 0,
+"values": [Vector2(0.187, 0.187), Vector2(0.358, 0.358)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LockOn:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.32987702, 0.25),
+"update": 0,
+"values": [0.0, -6.2831855]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("LockOn:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.32987702, 0.25),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_m1imf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LockOn:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.23737583, 0.23737583)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LockOn:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("LockOn:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_i5d1m"]
+_data = {
+&"Lock_On": SubResource("Animation_62eqo"),
+&"Lock_Out": SubResource("Animation_qqd75"),
+&"RESET": SubResource("Animation_m1imf")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xhsim"]
+radius = 128.06248
+
+[node name="BladeAnchor" type="Node2D" unique_id=984918503]
+position = Vector2(358, 372)
+script = ExtResource("1_msccm")
+
+[node name="LockOn" type="Sprite2D" parent="." unique_id=320121665]
+modulate = Color(1, 1, 1, 0)
+z_index = 1
+scale = Vector2(0.23737583, 0.23737583)
+texture = ExtResource("2_43wxe")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=911287262]
+libraries/ = SubResource("AnimationLibrary_i5d1m")
+
+[node name="MouseArea" type="Area2D" parent="." unique_id=395849483 groups=["BladeAnchorArea"]]
+collision_layer = 8
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MouseArea" unique_id=231401877]
+shape = SubResource("CircleShape2D_xhsim")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1884040998]
+modulate = Color(1, 0, 0, 1)
+scale = Vector2(0.17354746, 0.17354746)
+texture = ExtResource("3_43wxe")
